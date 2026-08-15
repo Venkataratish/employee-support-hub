@@ -1,55 +1,50 @@
-const requests = [
-  { emoji: "🍽️", title: "Food suggestion", detail: "Suggest meals, snacks, or dietary options", tone: "mint", href: "https://docs.google.com/forms/d/e/1FAIpQLScrp1YjJMashsS9CQHSlJUNGAmT8Q82C0fynkY9gM8MCiUWSw/viewform" },
-  { emoji: "⏰", title: "Missed clock-in/out", detail: "Report a missing time punch", tone: "blue", href: "https://docs.google.com/forms/d/e/1FAIpQLScCO2yiAHXxQnos2k1_flfANRUx9mura9oKcIfU0K2UUoP9bg/viewform" },
-  { emoji: "🕒", title: "Late entry", detail: "Let the team know about a late arrival", tone: "amber", href: "https://docs.google.com/forms/d/e/1FAIpQLSdpmQAooJmIh_4JxWtAhcfdNXe7wkyoLdA0I-YDxZRRBtg9nw/viewform" },
-  { emoji: "🤒", title: "Sick leave update", detail: "Share a sickness-related absence update", tone: "rose", href: "https://docs.google.com/forms/d/e/1FAIpQLSfIQJFOTJwEvMqStqrY4_aWCZ-G47w5YDiNSMNCCw4RZImX6A/viewform" },
-  { emoji: "🏖️", title: "Time-off request", detail: "Request a planned day or period off", tone: "violet", href: "https://docs.google.com/forms/d/e/1FAIpQLSeMo30FRAFpcrMgRqfvOCizqTs20wC0QeJPYv17SPN9dyiD-g/viewform" },
-  { emoji: "🤝", title: "Referral", detail: "Submit an employee referral", tone: "cyan", href: "https://docs.google.com/forms/d/e/1FAIpQLScIpnmmlb8tgODpby13ZtQqa7sc_NcYPTeltWleXZhkomsApQ/viewform" },
-  { emoji: "📝", title: "Other request", detail: "Send a request that does not fit above", tone: "slate", href: "https://docs.google.com/forms/d/e/1FAIpQLSfypTeLXGgE4HaX75qDDDYnELHhreg6LhVeMljAR22LstQ11g/viewform" },
+"use client";
+
+import { useMemo, useState } from "react";
+
+type Resource = { icon:string; title:string; description:string; category:string; keywords:string; href?:string; note?:string; featured?:boolean };
+
+const resources: Resource[] = [
+  {icon:"🆘",title:"Request Help",description:"Send a station support request with your location attached.",category:"Work Resources",keywords:"station scanner calibration equipment system lead manager",note:"Station A12-04 · Aisle A · Row 12",featured:true},
+  {icon:"⏰",title:"Time Off / ATO",description:"Request planned Approved Time Off through the official form.",category:"Payroll & Time",keywords:"absence vacation day off leave",href:"https://tinyurl.com/adeccotimeoff"},
+  {icon:"💰",title:"Pay & Paystubs",description:"View paystubs, W-2s, holiday pay status, and payroll information.",category:"Payroll & Time",keywords:"payroll paycheck direct deposit w2",href:"https://www.adomyinfo.com"},
+  {icon:"🤒",title:"Sick Time",description:"Check your sick-leave balance and enter eligible sick-time hours.",category:"Payroll & Time",keywords:"illness absence paid leave balance",href:"https://www.adomyinfo.com"},
+  {icon:"🕐",title:"Clock In / Clock Out",description:"See guidance for starting, ending, or correcting your shift.",category:"Payroll & Time",keywords:"time punch missed clock late shift",note:"Use the approved workplace clocking method. Report missing or incorrect punches through the existing quick form."},
+  {icon:"🏥",title:"Benefits & Insurance",description:"Medical, dental, vision, life, disability, and voluntary benefits.",category:"Benefits",keywords:"health aetna dental vision fmla telemedicine",href:"https://worklife.alight.com/theadeccogroup/"},
+  {icon:"🩺",title:"Work-Related Injury",description:"Follow the injury process and notify your supervisor promptly.",category:"Safety & Health",keywords:"accident safety emergency injury report",note:"For an emergency, call 911 or seek immediate care. Notify your supervisor promptly and follow the approved site reporting process.",featured:true},
+  {icon:"📱",title:"My Adecco",description:"Access assignments, pay information, jobs, and support in the app.",category:"Work Resources",keywords:"mobile app assignment recruiter",href:"https://www.adecco.com/en-us/job-seekers/myadecco"},
+  {icon:"👤",title:"Employee Portal",description:"Open ADOMYinfo for pay, sick leave, holiday pay, and tax forms.",category:"Work Resources",keywords:"adomyinfo account portal w2 paystub",href:"https://www.adomyinfo.com"},
+  {icon:"📊",title:"Timesheet & Expenses",description:"Open Bullhorn/Peoplenet for timesheets and expense support.",category:"Payroll & Time",keywords:"hours expense bullhorn peoplenet",href:"https://www.mypeoplenet.com"},
+  {icon:"💼",title:"401(k)",description:"Access retirement-plan information and account resources.",category:"Financial",keywords:"retirement principal savings pension",note:"The approved destination must be verified by HR before publishing."},
+  {icon:"🧠",title:"Employee Assistance",description:"Confidential emotional, legal, financial, wellness, and life support.",category:"HR & Employee Support",keywords:"eap guidance counseling stress legal wellness",href:"https://www.guidanceresources.com"},
+  {icon:"⚖️",title:"Legal / Employee Relations",description:"HR and employee-relations guidance for workplace concerns.",category:"HR & Employee Support",keywords:"human resources hub complaint concern",href:"https://thehub.adeccona.com"},
+  {icon:"🚗",title:"Transportation",description:"Review local Ride and FlexRide information before planning a trip.",category:"Transportation",keywords:"bus ride flexride commute reservation ann arbor",note:"Transportation service details can change. Add the current, management-approved local resource here."},
+  {icon:"🎁",title:"Employee Discounts",description:"Savings on shopping, travel, insurance, and more.",category:"Benefits",keywords:"beneplace deals vacation theme parks",href:"https://adecco.savings.beneplace.com/home"},
+  {icon:"🛡️",title:"Workplace Benefits",description:"Open Alight Worklife to manage workplace benefits.",category:"Benefits",keywords:"alight worklife enrollment coverage",href:"https://worklife.alight.com/theadeccogroup/"},
+  {icon:"📄",title:"Employment Verification",description:"Use The Work Number for employment or income verification.",category:"Work Resources",keywords:"equifax proof income employer",href:"https://www.theworknumber.com"},
+  {icon:"📋",title:"Attendance Policy",description:"Review attendance, approved absence, and reporting expectations.",category:"HR & Employee Support",keywords:"policy tardy late absence occurrence holiday",note:"This demo does not publish disciplinary thresholds. Employees should review the current approved policy and confirm questions with site leadership."},
 ];
 
-export default function Home() {
-  return (
-    <main>
-      <header className="topbar">
-        <a className="brand" href="#top" aria-label="Employee Support Hub home">
-          <span className="brandMark">EH</span>
-          <span><strong>Employee Support Hub</strong><small>Quick requests in one place</small></span>
-        </a>
-        <span className="privacy"><i /> Responses are private</span>
-      </header>
+const categories = ["All resources","Payroll & Time","Benefits","HR & Employee Support","Safety & Health","Work Resources","Transportation","Financial"];
+const quickForms = [
+  ["🍽️","Food suggestion","https://docs.google.com/forms/d/e/1FAIpQLScrp1YjJMashsS9CQHSlJUNGAmT8Q82C0fynkY9gM8MCiUWSw/viewform"],
+  ["⏰","Missed clock-in/out","https://docs.google.com/forms/d/e/1FAIpQLScCO2yiAHXxQnos2k1_flfANRUx9mura9oKcIfU0K2UUoP9bg/viewform"],
+  ["🕒","Late entry","https://docs.google.com/forms/d/e/1FAIpQLSdpmQAooJmIh_4JxWtAhcfdNXe7wkyoLdA0I-YDxZRRBtg9nw/viewform"],
+  ["🤒","Sick leave update","https://docs.google.com/forms/d/e/1FAIpQLSfIQJFOTJwEvMqStqrY4_aWCZ-G47w5YDiNSMNCCw4RZImX6A/viewform"],
+  ["🏖️","Time-off request","https://docs.google.com/forms/d/e/1FAIpQLSeMo30FRAFpcrMgRqfvOCizqTs20wC0QeJPYv17SPN9dyiD-g/viewform"],
+  ["🤝","Employee referral","https://docs.google.com/forms/d/e/1FAIpQLScIpnmmlb8tgODpby13ZtQqa7sc_NcYPTeltWleXZhkomsApQ/viewform"],
+  ["📝","Other request","https://docs.google.com/forms/d/e/1FAIpQLSfypTeLXGgE4HaX75qDDDYnELHhreg6LhVeMljAR22LstQ11g/viewform"],
+];
 
-      <section className="hero" id="top">
-        <div className="eyebrow">ONE QR · SEVEN SERVICES</div>
-        <h1>How can we help today?</h1>
-        <p>Choose a request below. A short form will open, and your response will go directly to the support team.</p>
-        <div className="steps" aria-label="How it works">
-          <span><b>1</b> Scan</span><i /><span><b>2</b> Choose</span><i /><span><b>3</b> Submit</span>
-        </div>
-      </section>
-
-      <section className="requestSection" aria-labelledby="request-heading">
-        <div className="sectionTitle">
-          <div><span>REQUEST MENU</span><h2 id="request-heading">Select a category</h2></div>
-          <p>Most forms take less than two minutes.</p>
-        </div>
-        <div className="requestGrid">
-          {requests.map((request) => (
-            <a className={`requestCard ${request.tone}`} href={request.href} key={request.title}>
-              <span className="emoji" aria-hidden="true">{request.emoji}</span>
-              <span className="cardCopy"><strong>{request.title}</strong><small>{request.detail}</small></span>
-              <span className="arrow" aria-hidden="true">→</span>
-            </a>
-          ))}
-        </div>
-      </section>
-
-      <section className="trust">
-        <div className="trustIcon">✓</div>
-        <div><strong>Simple, direct, and organized</strong><p>You complete a secure Google Form. Your response is stored privately and reviewed by the responsible person.</p></div>
-      </section>
-
-      <footer><span>Employee Support Hub</span><span>One QR code for everyday requests</span></footer>
-    </main>
-  );
+export default function Home(){
+  const [query,setQuery]=useState(""); const [category,setCategory]=useState(categories[0]); const [dialog,setDialog]=useState<Resource|null>(null);
+  const shown=useMemo(()=>resources.filter(r=>(category===categories[0]||r.category===category)&&`${r.title} ${r.description} ${r.keywords}`.toLowerCase().includes(query.toLowerCase().trim())),[query,category]);
+  return <main>
+    <header className="topbar"><a className="brand" href="#top"><span className="brandMark">EH</span><span><strong>Employee Resource Hub</strong><small>Support at your fingertips</small></span></a><nav><a href="#resources">Resources</a><a href="#quick-forms">Quick forms</a></nav><span className="privacy"><i/> No employee login required</span></header>
+    <section className="hero" id="top"><div><span className="eyebrow">ONE QR · EVERYDAY EMPLOYEE SUPPORT</span><h1>How can we help you today?</h1><p>Find the right employee resource, submit a request, or get station support—without searching through posters, emails, or multiple websites.</p><div className="heroActions"><a className="primary" href="#resources">Browse resources</a><button onClick={()=>setDialog(resources[0])}>🆘 Request station help</button></div></div><aside className="stationCard"><span>● DEMO STATION</span><strong>Station A12-04</strong><p>Aisle A · Row 12</p><small>A station QR identifies this location automatically. No employee credentials are stored in the code.</small></aside></section>
+    <section className="resourceSection" id="resources"><div className="sectionHeading"><div><span>EMPLOYEE RESOURCE DIRECTORY</span><h2>Everything you need, in one place</h2></div><p>Official sites open in a new tab. Internal guidance stays here.</p></div><label className="search"><b>⌕</b><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search pay, sick time, benefits, W-2, transportation…" aria-label="Search resources"/></label><div className="chips">{categories.map(c=><button className={c===category?"active":""} onClick={()=>setCategory(c)} key={c}>{c}</button>)}</div><div className="resultCount">{shown.length} resources</div><div className="resourceGrid">{shown.map(r=>{const inside=<><span className="resourceIcon">{r.icon}</span><small>{r.category}</small><h3>{r.title}</h3><p>{r.description}</p><b className="cardAction">{r.href?"Open resource ↗":"View details →"}</b></>;return r.href?<a className={`resourceCard ${r.featured?"featured":""}`} href={r.href} target="_blank" rel="noreferrer" key={r.title}>{inside}</a>:<button className={`resourceCard ${r.featured?"featured":""}`} onClick={()=>setDialog(r)} key={r.title}>{inside}</button>})}</div>{!shown.length&&<div className="empty"><strong>No matching resources</strong><p>Try another search or choose All resources.</p></div>}</section>
+    <section className="quickForms" id="quick-forms"><div><span className="eyebrow">QUICK EMPLOYEE FORMS</span><h2>Existing requests are still here</h2><p>We kept the original forms so current workflows continue to work.</p></div><div className="formLinks">{quickForms.map(([i,t,h])=><a href={h} target="_blank" rel="noreferrer" key={t}><span>{i}</span>{t}<b>↗</b></a>)}</div></section>
+    <section className="notice"><span>✓</span><div><strong>Privacy-conscious by design</strong><p>This hub does not ask for passwords, Social Security numbers, medical records, or account credentials. Sign in only on the official resource website you choose to open.</p></div></section><footer><strong>Employee Resource Hub</strong><span>Centralized access to everyday support</span><small>Demo content must be reviewed by HR/site leadership before production use.</small></footer>
+    {dialog&&<div className="modalBackdrop" onMouseDown={()=>setDialog(null)}><section className="modal" role="dialog" aria-modal="true" onMouseDown={e=>e.stopPropagation()}><button className="close" onClick={()=>setDialog(null)} aria-label="Close">×</button><span className="modalIcon">{dialog.icon}</span><small>{dialog.category}</small><h2>{dialog.title}</h2><p>{dialog.note}</p>{dialog.title==="Request Help"&&<><div className="stationSummary"><b>Station A12-04</b><span>Aisle A · Row 12</span></div><p>In the full StationAssist demo, scanning the station code identifies the location and lets the employee select an issue such as Focus / Calibration, Scanner Issue, Equipment Issue, System Issue, or Need Team Lead.</p><p className="callout">Response and expiration windows remain configurable until management confirms the operational rule.</p></>}<button className="secondary" onClick={()=>setDialog(null)}>Close</button></section></div>}
+  </main>
 }
