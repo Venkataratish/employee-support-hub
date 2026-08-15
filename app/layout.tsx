@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const image = `${protocol}://${host}/og.png`;
   return {
     title: "Employee Support Hub",
-    description: "One central place for payroll, benefits, attendance, safety, transportation, employee resources, and station support.",
+    description: "One central place for HR, payroll, benefits, attendance, safety, transportation, and employee resources.",
     openGraph: { title: "Employee Resource Hub", description: "One QR. Everyday employee support.", images: [image] },
     twitter: { card: "summary_large_image", title: "Employee Resource Hub", description: "One QR. Everyday employee support.", images: [image] },
   };
