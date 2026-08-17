@@ -11,10 +11,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const protocol = host.includes("localhost") || host.startsWith("127.0.0.1") ? "http" : "https";
   const image = `${protocol}://${host}/og.png`;
   return {
-    title: "Employee Support Hub",
+    title: "Adecco Employee Resource Hub",
     description: "One central place for HR, payroll, benefits, attendance, safety, transportation, and employee resources.",
-    openGraph: { title: "Employee Resource Hub", description: "One QR. Everyday employee support.", images: [image] },
-    twitter: { card: "summary_large_image", title: "Employee Resource Hub", description: "One QR. Everyday employee support.", images: [image] },
+    openGraph: { title: "Adecco Employee Resource Hub", description: "One QR. Everyday employee support.", images: [image] },
+    twitter: { card: "summary_large_image", title: "Adecco Employee Resource Hub", description: "One QR. Everyday employee support.", images: [image] },
   };
 }
 
