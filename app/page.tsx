@@ -40,8 +40,6 @@ export default function Home() {
   const metrics = useMemo(() => [
     { value: resources.length, label: "Total resources", detail: "Available in one directory" },
     { value: categories.length - 1, label: "Categories", detail: "Based on current resources" },
-    { value: resources.filter((resource) => resource.href).length, label: "Official links", detail: "Verified destinations" },
-    { value: resources.filter((resource) => resource.featured).length, label: "Featured resource", detail: "Priority guidance" },
   ], [categories.length]);
   const shown = useMemo(() => {
     const normalizedQuery = query.toLowerCase().trim();

@@ -34,8 +34,6 @@ const elements = {
 const metrics = [
   { value: resources.length, label: "Total resources", detail: "Available in one directory" },
   { value: categories.length - 1, label: "Categories", detail: "Based on current resources" },
-  { value: resources.filter((resource) => resource.href).length, label: "Official links", detail: "Verified destinations" },
-  { value: resources.filter((resource) => resource.featured).length, label: "Featured resource", detail: "Priority guidance" },
 ];
 elements.overview.innerHTML = metrics.map((metric) => `<div class="metric"><dt>${escapeHtml(metric.label)}</dt><dd>${metric.value}</dd><span>${escapeHtml(metric.detail)}</span></div>`).join("");
 elements.chips.innerHTML = categories.map((category) => `<button type="button" data-category="${escapeHtml(category)}" aria-pressed="${category === activeCategory}" class="${category === activeCategory ? "active" : ""}">${escapeHtml(category)}</button>`).join("");
