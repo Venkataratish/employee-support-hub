@@ -1,41 +1,106 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-type Resource = { icon:string; title:string; description:string; category:string; keywords:string; href?:string; note?:string; featured?:boolean };
+type Resource = { icon: string; title: string; description: string; category: string; keywords: string; href?: string; note?: string; featured?: boolean };
 
 const resources: Resource[] = [
-  {icon:"⏰",title:"Time Off / ATO",description:"Request planned Approved Time Off through the official form.",category:"Payroll & Time",keywords:"absence vacation day off leave",href:"https://tinyurl.com/adeccotimeoff",note:"Submit planned time-off requests in advance and wait for approval before finalizing plans. ATO approval and entering paid sick-time hours are separate processes."},
-  {icon:"💰",title:"Pay & Paystubs",description:"View paystubs, W-2s, holiday pay status, and payroll information.",category:"Payroll & Time",keywords:"payroll paycheck direct deposit w2",href:"https://www.adomyinfo.com"},
-  {icon:"🤒",title:"Sick Time",description:"Check your sick-leave balance and enter eligible sick-time hours.",category:"Payroll & Time",keywords:"illness absence paid leave balance",href:"https://www.adomyinfo.com",note:"Use ADOMYinfo to review your available balance and enter eligible sick-time hours. The Michigan earned-sick-time poster describes employee rights and permitted uses; confirm the current policy and eligibility rules with HR."},
-  {icon:"🕐",title:"Clock In / Clock Out",description:"See guidance for starting, ending, or correcting your shift.",category:"Payroll & Time",keywords:"time punch missed clock late shift",note:"Use the approved workplace clocking method. Report missing or incorrect punches to your site lead or HR contact."},
-  {icon:"🏥",title:"Benefits & Insurance",description:"Medical, dental, vision, life, disability, and voluntary benefits.",category:"Benefits",keywords:"health aetna dental vision fmla telemedicine",href:"https://worklife.alight.com/theadeccogroup/"},
-  {icon:"🩺",title:"Work-Related Injury",description:"Follow the injury process and notify your supervisor promptly.",category:"Safety & Health",keywords:"accident safety emergency injury report",note:"For an emergency, call 911 or seek immediate care. Notify your supervisor promptly and follow the approved site reporting process.",featured:true},
-  {icon:"📱",title:"My Adecco",description:"Access assignments, pay information, jobs, and support in the app.",category:"Work Resources",keywords:"mobile app assignment recruiter",href:"https://www.adecco.com/en-us/job-seekers/myadecco"},
-  {icon:"🔍",title:"Job Postings",description:"Search and apply for current Adecco job opportunities.",category:"Work Resources",keywords:"jobs openings careers apply employment opportunities",href:"https://www.adecco.com/en-us/job-seekers"},
-  {icon:"👤",title:"Employee Portal",description:"Open ADOMYinfo for pay, sick leave, holiday pay, and tax forms.",category:"Work Resources",keywords:"adomyinfo account portal w2 paystub",href:"https://www.adomyinfo.com"},
-  {icon:"📊",title:"Timesheet & Expenses",description:"Open Bullhorn/Peoplenet for timesheets and expense support.",category:"Payroll & Time",keywords:"hours expense bullhorn peoplenet",href:"https://www.mypeoplenet.com"},
-  {icon:"💼",title:"401(k)",description:"Access retirement-plan information and account resources.",category:"Financial",keywords:"retirement 401k savings pension alight worklife",href:"https://worklife.alight.com/theadeccogroup/",note:"Open the official Alight Worklife portal to review available retirement-plan information and account resources. Confirm plan-specific enrollment or contribution questions with HR."},
-  {icon:"🧠",title:"Employee Assistance",description:"Confidential emotional, legal, financial, wellness, and life support.",category:"HR & Employee Support",keywords:"eap guidance counseling stress legal wellness",href:"https://www.guidanceresources.com",note:"GuidanceResources offers confidential emotional support, work-and-life assistance, legal guidance, financial resources, digital tools, and wellness support. Use the official site and employer access information supplied by HR."},
-  {icon:"⚖️",title:"Legal / Employee Relations",description:"Contact Employee Relations and Human Resources (the HUB).",category:"HR & Employee Support",keywords:"human resources hub complaint concern email phone",href:"mailto:thehub@adeccona.com",note:"Email thehub@adeccona.com or call (800) 793-7657 and select option 6."},
-  {icon:"🚗",title:"Transportation",description:"Review current Pittsfield Township transportation and People’s Express information.",category:"Transportation",keywords:"bus ride flexride commute reservation ann arbor peoples express",href:"https://www.pittsfield-mi.gov/2417/Peoples-Express",note:"Pittsfield Township transitioned its curb-to-curb service to People’s Express in January 2026. Open the Township’s official transportation page for current booking details, service hours, fares, and contact information."},
-  {icon:"🎁",title:"Employee Discounts",description:"Savings on shopping, travel, insurance, and more.",category:"Benefits",keywords:"beneplace deals vacation theme parks",href:"https://adecco.savings.beneplace.com/home",note:"Beneplace includes employee savings on shopping, theme parks, travel, car insurance, and other offers. Register using the email address associated with your employment record."},
-  {icon:"🛡️",title:"Workplace Benefits",description:"Open Alight Worklife to manage workplace benefits.",category:"Benefits",keywords:"alight worklife enrollment coverage",href:"https://worklife.alight.com/theadeccogroup/",note:"First-time users create their own Alight Worklife credentials on the official portal. Never enter identity-verification information anywhere except the verified Alight website."},
-  {icon:"📄",title:"Employment Verification",description:"Use The Work Number for employment or income verification.",category:"Work Resources",keywords:"equifax proof income employer",href:"https://www.theworknumber.com"},
-  {icon:"📋",title:"Attendance Policy",description:"Request the current attendance, absence, and reporting policy from HR.",category:"HR & Employee Support",keywords:"policy tardy late absence occurrence holiday",note:"Attendance rules can vary by assignment and site. Contact the HUB at thehub@adeccona.com or call (800) 793-7657, option 6, to request the current approved attendance policy."},
-  {icon:"📅",title:"2026 Observed Holidays",description:"See the workplace’s posted 2026 observed-holiday dates.",category:"Payroll & Time",keywords:"new year mlk memorial independence labor thanksgiving black friday christmas",note:"Posted 2026 dates\n\nNew Year’s Day — Jan 1\nMLK Day — Jan 19\nMemorial Day — May 25\nIndependence Day observed — Jul 3\nLabor Day — Sep 7\nThanksgiving — Nov 26\nBlack Friday — Nov 27\nChristmas Day — Dec 25\n\nPlease confirm the current schedule with HR before making plans."},
-  {icon:"👥",title:"Adecco Leadership Contacts",description:"Contact information for Global Operations, the Site Manager, Program Manager, and Area Operations Partner.",category:"Leadership Contacts",keywords:"joe mills john welton jamie schmitt gloria zuniga leadership contacts",note:"Joe Mills — Global Operations\njoe.mills@adeccona.com · Cell: (734) 249-0976\n\nJohn Welton — Site Manager\njohn.welton@adeccona.com\n\nJamie Schmitt — Program Manager\njamieson.schmitt@adeccona.com · Cell: (517) 428-3623\n\nGloria Zuniga — Area Operations Partner\ngloria.zuniga@adeccona.com · Text: (818) 277-6273"},
+  { icon: "⏰", title: "Time Off / ATO", description: "Request planned Approved Time Off through the official form.", category: "Payroll & Time", keywords: "absence vacation day off leave", href: "https://tinyurl.com/adeccotimeoff", note: "Submit planned time-off requests in advance and wait for approval before finalizing plans. ATO approval and entering paid sick-time hours are separate processes." },
+  { icon: "💰", title: "Pay & Paystubs", description: "View paystubs, W-2s, holiday pay status, and payroll information.", category: "Payroll & Time", keywords: "payroll paycheck direct deposit w2", href: "https://www.adomyinfo.com" },
+  { icon: "🤒", title: "Sick Time", description: "Check your sick-leave balance and enter eligible sick-time hours.", category: "Payroll & Time", keywords: "illness absence paid leave balance", href: "https://www.adomyinfo.com", note: "Use ADOMYinfo to review your available balance and enter eligible sick-time hours. Confirm current eligibility and policy rules with HR." },
+  { icon: "🕐", title: "Clock In / Clock Out", description: "See guidance for starting, ending, or correcting your shift.", category: "Payroll & Time", keywords: "time punch missed clock late shift", note: "Use the approved workplace clocking method. Report missing or incorrect punches to your site lead or HR contact." },
+  { icon: "🏥", title: "Benefits & Insurance", description: "Medical, dental, vision, life, disability, and voluntary benefits.", category: "Benefits", keywords: "health dental vision fmla telemedicine", href: "https://worklife.alight.com/theadeccogroup/" },
+  { icon: "🩺", title: "Work-Related Injury", description: "Follow the injury process and notify your supervisor promptly.", category: "Safety & Health", keywords: "accident safety emergency injury report", note: "For an emergency, call 911 or seek immediate care. Notify your supervisor promptly and follow the approved site reporting process.", featured: true },
+  { icon: "📱", title: "My Adecco", description: "Access assignments, pay information, jobs, and support in the app.", category: "Work Resources", keywords: "mobile app assignment recruiter", href: "https://www.adecco.com/en-us/job-seekers/app" },
+  { icon: "🔍", title: "Job Postings", description: "Search and apply for current Adecco job opportunities.", category: "Work Resources", keywords: "jobs openings careers apply employment opportunities", href: "https://www.adecco.com/en-us/job-seekers" },
+  { icon: "👤", title: "Employee Portal", description: "Open ADOMYinfo for pay, sick leave, holiday pay, and tax forms.", category: "Work Resources", keywords: "adomyinfo account portal w2 paystub", href: "https://www.adomyinfo.com" },
+  { icon: "📊", title: "Timesheet & Expenses", description: "Open Bullhorn/Peoplenet for timesheets and expense support.", category: "Payroll & Time", keywords: "hours expense bullhorn peoplenet", href: "https://www.mypeoplenet.com" },
+  { icon: "💼", title: "401(k)", description: "Access retirement-plan information and account resources.", category: "Financial", keywords: "retirement 401k savings pension alight worklife", href: "https://worklife.alight.com/theadeccogroup/", note: "Open the official Alight Worklife portal to review available retirement-plan information and account resources. Confirm plan-specific enrollment or contribution questions with HR." },
+  { icon: "🧠", title: "Employee Assistance", description: "Confidential emotional, legal, financial, wellness, and life support.", category: "HR & Employee Support", keywords: "eap counseling stress legal wellness optum", href: "https://www.liveandworkwell.com", note: "Use Adecco’s employee assistance resource for confidential emotional support, work-and-life assistance, legal guidance, financial resources, and wellness support. The employer access code is Adecco." },
+  { icon: "⚖️", title: "Legal / Employee Relations", description: "Contact Employee Relations and Human Resources (the HUB).", category: "HR & Employee Support", keywords: "human resources hub complaint concern email phone", href: "mailto:thehub@adeccona.com", note: "Email thehub@adeccona.com or call (800) 793-7657 and select option 6." },
+  { icon: "🚗", title: "Transportation", description: "Review Pittsfield Township transportation and People’s Express information.", category: "Transportation", keywords: "bus ride flexride commute reservation ann arbor peoples express", href: "https://www.pittsfield-mi.gov/2417/Peoples-Express", note: "Open the Township’s official transportation page for current booking details, service hours, fares, and contact information." },
+  { icon: "🎁", title: "Employee Discounts", description: "Access savings on shopping, travel, insurance, and more.", category: "Benefits", keywords: "beneplace deals vacation theme parks", href: "https://www.beneplace.com/adecco", note: "Use Adecco’s Associate Discount Program for available savings on hotels, car rentals, electronics, travel, and other offers." },
+  { icon: "🛡️", title: "Workplace Benefits", description: "Open Alight Worklife to manage workplace benefits.", category: "Benefits", keywords: "alight worklife enrollment coverage", href: "https://worklife.alight.com/theadeccogroup/", note: "First-time users create their own Alight Worklife credentials on the official portal. Enter identity-verification information only on the verified Alight website." },
+  { icon: "📄", title: "Employment Verification", description: "Use The Work Number for employment or income verification.", category: "Work Resources", keywords: "equifax proof income employer", href: "https://www.theworknumber.com" },
+  { icon: "📋", title: "Attendance Policy", description: "Request the current attendance, absence, and reporting policy from HR.", category: "HR & Employee Support", keywords: "policy tardy late absence occurrence holiday", note: "Attendance rules can vary by assignment and site. Contact the HUB at thehub@adeccona.com or call (800) 793-7657, option 6, to request the current approved attendance policy." },
+  { icon: "📅", title: "2026 Observed Holidays", description: "Review the workplace’s posted 2026 observed-holiday dates.", category: "Payroll & Time", keywords: "new year mlk memorial independence labor thanksgiving black friday christmas", note: "Posted dates: New Year’s Day — Jan 1; MLK Day — Jan 19; Memorial Day — May 25; Independence Day observed — Jul 3; Labor Day — Sep 7; Thanksgiving — Nov 26; Black Friday — Nov 27; Christmas Day — Dec 25. Confirm assignment-specific holiday eligibility with your site lead." },
+  { icon: "👥", title: "Adecco Leadership Contacts", description: "Contact Global Operations, the Site Manager, Program Manager, or Area Operations Partner.", category: "Leadership Contacts", keywords: "joe mills john welton jamie schmitt gloria zuniga leadership contacts", note: "Joe Mills — Global Operations\njoe.mills@adeccona.com · Cell: (734) 249-0976\n\nJohn Welton — Site Manager\njohn.welton@adeccona.com\n\nJamie Schmitt — Program Manager\njamieson.schmitt@adeccona.com · Cell: (517) 428-3623\n\nGloria Zuniga — Area Operations Partner\ngloria.zuniga@adeccona.com · Text: (818) 277-6273" },
 ];
 
-const categories = ["All resources","Payroll & Time","Benefits","HR & Employee Support","Safety & Health","Work Resources","Transportation","Financial","Leadership Contacts"];
-export default function Home(){
-  const [query,setQuery]=useState(""); const [category,setCategory]=useState(categories[0]); const [dialog,setDialog]=useState<Resource|null>(null);
-  const shown=useMemo(()=>resources.filter(r=>(category===categories[0]||r.category===category)&&`${r.title} ${r.description} ${r.keywords}`.toLowerCase().includes(query.toLowerCase().trim())),[query,category]);
+const allResourcesLabel = "All resources";
+
+export default function Home() {
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState(allResourcesLabel);
+  const [dialog, setDialog] = useState<Resource | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const lastFocusedRef = useRef<HTMLElement | null>(null);
+
+  const categories = useMemo(() => [allResourcesLabel, ...Array.from(new Set(resources.map((resource) => resource.category)))], []);
+  const metrics = useMemo(() => [
+    { value: resources.length, label: "Total resources", detail: "Available in one directory" },
+    { value: categories.length - 1, label: "Categories", detail: "Based on current resources" },
+    { value: resources.filter((resource) => resource.href).length, label: "Official links", detail: "Verified destinations" },
+    { value: resources.filter((resource) => resource.featured).length, label: "Featured resource", detail: "Priority guidance" },
+  ], [categories.length]);
+  const shown = useMemo(() => {
+    const normalizedQuery = query.toLowerCase().trim();
+    return resources.filter((resource) => {
+      const categoryMatches = category === allResourcesLabel || resource.category === category;
+      const searchMatches = `${resource.title} ${resource.description} ${resource.category} ${resource.keywords}`.toLowerCase().includes(normalizedQuery);
+      return categoryMatches && searchMatches;
+    });
+  }, [query, category]);
+
+  useEffect(() => {
+    if (!dialog) return;
+    closeButtonRef.current?.focus();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const handleEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setDialog(null); };
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleEscape);
+      lastFocusedRef.current?.focus();
+    };
+  }, [dialog]);
+
+  const openResource = (resource: Resource, trigger: HTMLElement) => {
+    lastFocusedRef.current = trigger;
+    setDialog(resource);
+  };
+
   return <main>
-    <header className="topbar"><a className="brand" href="#top"><img className="brandLogo" src="/adecco-logo.png" alt="Adecco"/><span><strong>Adecco Employee Resource Hub</strong><small>Support at your fingertips</small></span></a><nav><a href="#resources">Resources</a></nav></header>
-    <section className="hero" id="top"><div><span className="eyebrow">EVERYDAY EMPLOYEE SUPPORT</span><h1>How can we help you today?</h1><p>Find the right HR, payroll, benefits, attendance, safety, transportation, or employee resource—all in one place.</p><div className="heroActions"><a className="primary" href="#resources">Browse resources</a></div></div></section>
-    <section className="resourceSection" id="resources"><div className="sectionHeading"><div><span>EMPLOYEE RESOURCE DIRECTORY</span><h2>Everything you need, in one place</h2></div><p>Official sites open in a new tab. Internal guidance stays here.</p></div><label className="search"><b>⌕</b><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search pay, sick time, benefits, W-2, transportation…" aria-label="Search resources"/></label><div className="chips">{categories.map(c=><button className={c===category?"active":""} onClick={()=>setCategory(c)} key={c}>{c}</button>)}</div><div className="resultCount">{shown.length} resources</div><div className="resourceGrid">{shown.map(r=>{const inside=<><span className="resourceIcon">{r.icon}</span><small>{r.category}</small><h3>{r.title}</h3><p>{r.description}</p><b className="cardAction">{r.href?"Open resource ↗":"View details →"}</b></>;return r.href?<a className={`resourceCard ${r.featured?"featured":""}`} href={r.href} target="_blank" rel="noreferrer" key={r.title}>{inside}</a>:<button className={`resourceCard ${r.featured?"featured":""}`} onClick={()=>setDialog(r)} key={r.title}>{inside}</button>})}</div>{!shown.length&&<div className="empty"><strong>No matching resources</strong><p>Try another search or choose All resources.</p></div>}</section>
+    <header className="topbar">
+      <a className="brand" href="#top" aria-label="Adecco Employee Resource Hub home">
+        {/* The supplied brand asset is already optimized and intentionally served directly. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="brandLogo" src="/adecco-logo.png" alt="Adecco"/>
+        <span><strong>Adecco Employee Resource Hub</strong><small>Support at your fingertips</small></span>
+      </a>
+      <nav aria-label="Primary navigation"><a href="#resources">Resources</a></nav>
+    </header>
+
+    <section className="hero" id="top">
+      <div className="heroCopy"><span className="eyebrow">EVERYDAY EMPLOYEE SUPPORT</span><h1>How can we help you today?</h1><p>Find HR, payroll, benefits, attendance, safety, transportation, and workplace resources in one reliable directory.</p><a className="primary" href="#resources">Browse resources</a></div>
+      <dl className="overview" aria-label="Resource overview">{metrics.map((metric) => <div className="metric" key={metric.label}><dt>{metric.label}</dt><dd>{metric.value}</dd><span>{metric.detail}</span></div>)}</dl>
+    </section>
+
+    <section className="resourceSection" id="resources">
+      <div className="sectionHeading"><div><span>EMPLOYEE RESOURCE DIRECTORY</span><h2>Find the right resource</h2></div><p>Search the directory or choose a category.</p></div>
+      <div className="directoryControls">
+        <label className="search"><span aria-hidden="true">⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by title, description, or category" aria-label="Search employee resources"/>{query && <button type="button" onClick={() => setQuery("")} aria-label="Clear search">Clear</button>}</label>
+        <div className="chips" role="group" aria-label="Filter resources by category">{categories.map((item) => <button type="button" className={item === category ? "active" : ""} aria-pressed={item === category} onClick={() => setCategory(item)} key={item}>{item}</button>)}</div>
+      </div>
+      <div className="resultsHeader" aria-live="polite"><strong>{shown.length} {shown.length === 1 ? "resource" : "resources"}</strong>{(query || category !== allResourcesLabel) && <span>matching your current filters</span>}</div>
+      {shown.length > 0 ? <div className="resourceGrid">{shown.map((resource) => <article className={`resourceCard ${resource.featured ? "featured" : ""}`} key={resource.title}><div className="cardTop"><span className="resourceIcon" aria-hidden="true">{resource.icon}</span>{resource.featured && <span className="featuredTag">Featured</span>}</div><small>{resource.category}</small><h3>{resource.title}</h3><p>{resource.description}</p><button type="button" className="cardAction" onClick={(event) => openResource(resource, event.currentTarget)}>View details</button></article>)}</div> : <div className="empty" role="status"><span aria-hidden="true">⌕</span><strong>No resources found</strong><p>Try a different search term or select another category.</p><button type="button" className="secondary" onClick={() => { setQuery(""); setCategory(allResourcesLabel); }}>Reset filters</button></div>}
+    </section>
+
     <footer><strong>Adecco Employee Resource Hub</strong><span>Centralized access to everyday support</span></footer>
-    {dialog&&<div className="modalBackdrop" onMouseDown={()=>setDialog(null)}><section className="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" onMouseDown={e=>e.stopPropagation()}><button className="close" onClick={()=>setDialog(null)} aria-label="Close">×</button><span className="modalIcon">{dialog.icon}</span><small>{dialog.category}</small><h2 id="modalTitle">{dialog.title}</h2><p>{dialog.note}</p><div className="modalActions">{dialog.href&&<a className="primary modalLink" href={dialog.href} target="_blank" rel="noreferrer">{dialog.href.startsWith("mailto:")?"✉️ Email the HUB":"Open official resource ↗"}</a>}{dialog.title==="Legal / Employee Relations"&&<a className="secondary modalLink" href="tel:+18007937657">📞 Call the HUB</a>}<button className="secondary" onClick={()=>setDialog(null)}>Close</button></div></section></div>}
-  </main>
+
+    {/* Backdrop mouse handling supports click-outside dismissal; keyboard users can use Escape or either Close button. */}
+    {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+    {dialog && <div className="modalBackdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setDialog(null); }}><section className="modal" role="dialog" aria-modal="true" aria-labelledby="resource-dialog-title"><button ref={closeButtonRef} className="close" type="button" onClick={() => setDialog(null)} aria-label="Close resource details">×</button><span className="modalIcon" aria-hidden="true">{dialog.icon}</span><small>{dialog.category}</small><h2 id="resource-dialog-title">{dialog.title}</h2><p className="modalDescription">{dialog.description}</p>{dialog.note && <div className="instructions"><strong>What to know</strong><p>{dialog.note}</p></div>}<div className="modalActions">{dialog.href && <a className="primary" href={dialog.href} target={dialog.href.startsWith("mailto:") ? undefined : "_blank"} rel="noreferrer">{dialog.href.startsWith("mailto:") ? "Email the HUB" : "Open official resource"}</a>}{dialog.title === "Legal / Employee Relations" && <a className="secondary" href="tel:+18007937657">Call the HUB</a>}<button className="secondary" type="button" onClick={() => setDialog(null)}>Close</button></div></section></div>}
+  </main>;
 }
