@@ -16,14 +16,13 @@ test("resource data powers the dashboard metrics and filters", async () => {
   assert.match(page, /No resources found/);
 });
 
-test("resource details and search are accessible", async () => {
+test("resource actions and search are accessible", async () => {
   const page = await readFile(new URL("app/page.tsx", root), "utf8");
   assert.match(page, /aria-label="Search employee resources"/);
   assert.match(page, /aria-pressed=/);
-  assert.match(page, /role="dialog"/);
-  assert.match(page, /aria-modal="true"/);
-  assert.match(page, /event\.key === "Escape"/);
-  assert.match(page, /Close resource details/);
+  assert.match(page, /"Open resource"/);
+  assert.match(page, />View instructions</);
+  assert.doesNotMatch(page, /target="_blank"|role="dialog"|aria-modal="true"/);
 });
 
 test("public GitHub Pages build stays synchronized", async () => {
@@ -37,6 +36,8 @@ test("public GitHub Pages build stays synchronized", async () => {
   assert.match(html, /id="search"/);
   assert.match(app, /const resources = \[/);
   assert.match(app, /elements\.empty/);
+  assert.match(app, /Open resource/);
+  assert.doesNotMatch(`${html}\n${app}`, /target=["']_blank["']|modalBackdrop/);
   assert.match(styles, /grid-template-columns:repeat\(4/);
   assert.doesNotMatch(`${html}\n${app}`, /lorem ipsum|demo content|placeholder text/i);
 });

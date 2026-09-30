@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 
 type Resource = { icon: string; title: string; description: string; category: string; keywords: string; href?: string; note?: string; featured?: boolean };
 
@@ -32,9 +32,6 @@ const allResourcesLabel = "All resources";
 export default function Home() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState(allResourcesLabel);
-  const [dialog, setDialog] = useState<Resource | null>(null);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const lastFocusedRef = useRef<HTMLElement | null>(null);
 
   const categories = useMemo(() => [allResourcesLabel, ...Array.from(new Set(resources.map((resource) => resource.category)))], []);
   const metrics = useMemo(() => [
@@ -49,25 +46,6 @@ export default function Home() {
       return categoryMatches && searchMatches;
     });
   }, [query, category]);
-
-  useEffect(() => {
-    if (!dialog) return;
-    closeButtonRef.current?.focus();
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const handleEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setDialog(null); };
-    document.addEventListener("keydown", handleEscape);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      document.removeEventListener("keydown", handleEscape);
-      lastFocusedRef.current?.focus();
-    };
-  }, [dialog]);
-
-  const openResource = (resource: Resource, trigger: HTMLElement) => {
-    lastFocusedRef.current = trigger;
-    setDialog(resource);
-  };
 
   return <main>
     <header className="topbar">
@@ -92,13 +70,10 @@ export default function Home() {
         <div className="chips" role="group" aria-label="Filter resources by category">{categories.map((item) => <button type="button" className={item === category ? "active" : ""} aria-pressed={item === category} onClick={() => setCategory(item)} key={item}>{item}</button>)}</div>
       </div>
       <div className="resultsHeader" aria-live="polite"><strong>{shown.length} {shown.length === 1 ? "resource" : "resources"}</strong>{(query || category !== allResourcesLabel) && <span>matching your current filters</span>}</div>
-      {shown.length > 0 ? <div className="resourceGrid">{shown.map((resource) => <article className={`resourceCard ${resource.featured ? "featured" : ""}`} key={resource.title}><div className="cardTop"><span className="resourceIcon" aria-hidden="true">{resource.icon}</span>{resource.featured && <span className="featuredTag">Featured</span>}</div><small>{resource.category}</small><h3>{resource.title}</h3><p>{resource.description}</p><button type="button" className="cardAction" onClick={(event) => openResource(resource, event.currentTarget)}>View details</button></article>)}</div> : <div className="empty" role="status"><span aria-hidden="true">⌕</span><strong>No resources found</strong><p>Try a different search term or select another category.</p><button type="button" className="secondary" onClick={() => { setQuery(""); setCategory(allResourcesLabel); }}>Reset filters</button></div>}
+      {shown.length > 0 ? <div className="resourceGrid">{shown.map((resource) => <article className={`resourceCard ${resource.featured ? "featured" : ""}`} key={resource.title}><div className="cardTop"><span className="resourceIcon" aria-hidden="true">{resource.icon}</span>{resource.featured && <span className="featuredTag">Featured</span>}</div><small>{resource.category}</small><h3>{resource.title}</h3><p>{resource.description}</p>{resource.href ? <a className="cardAction" href={resource.href}>{resource.href.startsWith("mailto:") ? "Email resource" : "Open resource"}</a> : <details className="cardInstructions"><summary>View instructions</summary><p>{resource.note}</p></details>}</article>)}</div> : <div className="empty" role="status"><span aria-hidden="true">⌕</span><strong>No resources found</strong><p>Try a different search term or select another category.</p><button type="button" className="secondary" onClick={() => { setQuery(""); setCategory(allResourcesLabel); }}>Reset filters</button></div>}
     </section>
 
     <footer><strong>Adecco Employee Resource Hub</strong><span>Centralized access to everyday support</span></footer>
 
-    {/* Backdrop mouse handling supports click-outside dismissal; keyboard users can use Escape or either Close button. */}
-    {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-    {dialog && <div className="modalBackdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setDialog(null); }}><section className="modal" role="dialog" aria-modal="true" aria-labelledby="resource-dialog-title"><button ref={closeButtonRef} className="close" type="button" onClick={() => setDialog(null)} aria-label="Close resource details">×</button><span className="modalIcon" aria-hidden="true">{dialog.icon}</span><small>{dialog.category}</small><h2 id="resource-dialog-title">{dialog.title}</h2><p className="modalDescription">{dialog.description}</p>{dialog.note && <div className="instructions"><strong>What to know</strong><p>{dialog.note}</p></div>}<div className="modalActions">{dialog.href && <a className="primary" href={dialog.href} target={dialog.href.startsWith("mailto:") ? undefined : "_blank"} rel="noreferrer">{dialog.href.startsWith("mailto:") ? "Email the HUB" : "Open official resource"}</a>}{dialog.title === "Legal / Employee Relations" && <a className="secondary" href="tel:+18007937657">Call the HUB</a>}<button className="secondary" type="button" onClick={() => setDialog(null)}>Close</button></div></section></div>}
   </main>;
 }

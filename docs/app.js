@@ -24,11 +24,10 @@ const resources = [
 const allResourcesLabel = "All resources";
 const categories = [allResourcesLabel, ...new Set(resources.map((resource) => resource.category))];
 let activeCategory = allResourcesLabel;
-let lastFocused = null;
 
 const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[character]));
 const elements = {
-  search: document.querySelector("#search"), clear: document.querySelector("#clear-search"), chips: document.querySelector("#chips"), count: document.querySelector("#count"), grid: document.querySelector("#grid"), empty: document.querySelector("#empty"), overview: document.querySelector("#overview"), overlay: document.querySelector("#overlay"), close: document.querySelector("#close-modal"), icon: document.querySelector("#modal-icon"), category: document.querySelector("#modal-category"), title: document.querySelector("#modal-title"), description: document.querySelector("#modal-description"), instructions: document.querySelector("#modal-instructions"), note: document.querySelector("#modal-note"), link: document.querySelector("#modal-link"), phone: document.querySelector("#modal-phone")
+  search: document.querySelector("#search"), clear: document.querySelector("#clear-search"), chips: document.querySelector("#chips"), count: document.querySelector("#count"), grid: document.querySelector("#grid"), empty: document.querySelector("#empty"), overview: document.querySelector("#overview")
 };
 
 const metrics = [
@@ -46,35 +45,11 @@ function render() {
   elements.grid.hidden = visible.length === 0;
   elements.empty.hidden = visible.length !== 0;
   elements.grid.innerHTML = visible.map((resource) => {
-    const index = resources.indexOf(resource);
-    return `<article class="resourceCard ${resource.featured ? "featured" : ""}"><div class="cardTop"><span class="resourceIcon" aria-hidden="true">${resource.icon}</span>${resource.featured ? '<span class="featuredTag">Featured</span>' : ""}</div><small>${escapeHtml(resource.category)}</small><h3>${escapeHtml(resource.title)}</h3><p>${escapeHtml(resource.description)}</p><button type="button" class="cardAction" data-resource-index="${index}">View details</button></article>`;
+    const action = resource.href
+      ? `<a class="cardAction" href="${escapeHtml(resource.href)}">${resource.href.startsWith("mailto:") ? "Email resource" : "Open resource"}</a>`
+      : `<details class="cardInstructions"><summary>View instructions</summary><p>${escapeHtml(resource.note || "Contact your site lead or HR for assistance.")}</p></details>`;
+    return `<article class="resourceCard ${resource.featured ? "featured" : ""}"><div class="cardTop"><span class="resourceIcon" aria-hidden="true">${resource.icon}</span>${resource.featured ? '<span class="featuredTag">Featured</span>' : ""}</div><small>${escapeHtml(resource.category)}</small><h3>${escapeHtml(resource.title)}</h3><p>${escapeHtml(resource.description)}</p>${action}</article>`;
   }).join("");
-}
-
-function openResource(index, trigger) {
-  const resource = resources[index];
-  lastFocused = trigger;
-  elements.icon.textContent = resource.icon;
-  elements.category.textContent = resource.category;
-  elements.title.textContent = resource.title;
-  elements.description.textContent = resource.description;
-  elements.instructions.hidden = !resource.note;
-  elements.note.textContent = resource.note || "";
-  elements.link.hidden = !resource.href;
-  elements.link.href = resource.href || "#";
-  elements.link.textContent = resource.href?.startsWith("mailto:") ? "Email the HUB" : "Open official resource";
-  elements.link.target = resource.href?.startsWith("mailto:") ? "" : "_blank";
-  elements.phone.hidden = resource.title !== "Legal / Employee Relations";
-  elements.overlay.hidden = false;
-  document.body.style.overflow = "hidden";
-  elements.close.focus();
-}
-
-function closeModal() {
-  if (elements.overlay.hidden) return;
-  elements.overlay.hidden = true;
-  document.body.style.overflow = "";
-  lastFocused?.focus();
 }
 
 elements.search.addEventListener("input", render);
@@ -86,10 +61,5 @@ elements.chips.addEventListener("click", (event) => {
   elements.chips.querySelectorAll("button").forEach((item) => { const selected = item.dataset.category === activeCategory; item.classList.toggle("active", selected); item.setAttribute("aria-pressed", String(selected)); });
   render();
 });
-elements.grid.addEventListener("click", (event) => { const button = event.target.closest("button[data-resource-index]"); if (button) openResource(Number(button.dataset.resourceIndex), button); });
 document.querySelector("#reset-filters").addEventListener("click", () => { activeCategory = allResourcesLabel; elements.search.value = ""; elements.chips.querySelectorAll("button").forEach((item) => { const selected = item.dataset.category === activeCategory; item.classList.toggle("active", selected); item.setAttribute("aria-pressed", String(selected)); }); render(); });
-elements.close.addEventListener("click", closeModal);
-document.querySelector("#modal-close-action").addEventListener("click", closeModal);
-elements.overlay.addEventListener("mousedown", (event) => { if (event.target === elements.overlay) closeModal(); });
-document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeModal(); });
 render();
