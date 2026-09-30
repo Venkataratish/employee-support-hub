@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Portfolio demonstration videos for StationAssist and the Adecco project portfolio.">
+    <title>Portfolio Demonstrations</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #13213b;
+        --muted: #52637c;
+        --accent: #008a78;
+        --border: #d9e2ed;
+        --surface: #ffffff;
+        --page: #f4f7fb;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--page);
+        font-family: Aptos, Arial, sans-serif;
+        line-height: 1.5;
+      }
+
+      header {
+        padding: 58px 24px 42px;
+        color: #ffffff;
+        background: linear-gradient(135deg, #13213b, #1d4360);
+      }
+
+      .wrap {
+        width: min(1120px, calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        color: #70e1cf;
+        font-size: 0.8rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        max-width: 760px;
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        line-height: 1.08;
+      }
+
+      .intro {
+        max-width: 700px;
+        margin: 16px 0 0;
+        color: #e0e9f5;
+        font-size: 1.05rem;
+      }
+
+      main { padding: 38px 0 56px; }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 26px;
+      }
+
+      .card {
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: var(--surface);
+        box-shadow: 0 10px 28px rgba(21, 42, 72, 0.08);
+      }
+
+      video {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        background: #0d1728;
+      }
+
+      .card-body { padding: 22px; }
+
+      h2 {
+        margin: 0;
+        font-size: 1.35rem;
+        line-height: 1.2;
+      }
+
+      .card-body p {
+        margin: 10px 0 16px;
+        color: var(--muted);
+      }
+
+      a {
+        color: var(--accent);
+        font-weight: 750;
+      }
+
+      .note {
+        margin: 32px 0 0;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      @media (max-width: 760px) {
+        header { padding: 42px 20px 34px; }
+        .wrap { width: min(100% - 28px, 1120px); }
+        .grid { grid-template-columns: 1fr; }
+        main { padding-top: 28px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap">
+        <p class="eyebrow">Portfolio demonstrations</p>
+        <h1>Watch the project demos online</h1>
+        <p class="intro">Choose either video below to watch in your browser. No download is needed.</p>
+      </div>
+    </header>
+
+    <main>
+      <div class="wrap">
+        <div class="grid">
+          <article class="card">
+            <video controls preload="metadata" playsinline>
+              <source src="StationAssist_Portfolio_Demo.mp4" type="video/mp4">
+              Your browser does not support embedded video.
+            </video>
+            <div class="card-body">
+              <h2>StationAssist Portfolio Demo</h2>
+              <p>A workforce-support and scanner-station management prototype.</p>
+              <a href="StationAssist_Portfolio_Demo.mp4">Open the StationAssist video</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <video controls preload="metadata" playsinline>
+              <source src="Adecco_Project_Portfolio_Demo.mp4" type="video/mp4">
+              Your browser does not support embedded video.
+            </video>
+            <div class="card-body">
+              <h2>Adecco Project Portfolio Demo</h2>
+              <p>A portfolio walkthrough featuring the Visitor Check-In Demo and Employee Resource Hub.</p>
+              <a href="Adecco_Project_Portfolio_Demo.mp4">Open the Adecco project video</a>
+            </div>
+          </article>
+        </div>
+
+        <p class="note">These videos show portfolio prototypes. The demonstrations use local or fictional data and are not production systems.</p>
+      </div>
+    </main>
+  </body>
+</html>
