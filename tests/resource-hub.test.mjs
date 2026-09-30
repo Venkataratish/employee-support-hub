@@ -22,6 +22,8 @@ test("resource actions and search are accessible", async () => {
   assert.match(page, /aria-pressed=/);
   assert.match(page, /"Open resource"/);
   assert.match(page, />View instructions</);
+  assert.match(page, /mailto:jamieson\.schmitt@adeccona\.com\?subject=Employee%20Resource%20Hub%20Question/);
+  assert.match(page, /Have more questions\? Contact Jamie\./);
   assert.doesNotMatch(page, /target="_blank"|role="dialog"|aria-modal="true"/);
 });
 
@@ -37,6 +39,7 @@ test("public GitHub Pages build stays synchronized", async () => {
   assert.match(app, /const resources = \[/);
   assert.match(app, /elements\.empty/);
   assert.match(app, /Open resource/);
+  assert.match(html, /mailto:jamieson\.schmitt@adeccona\.com/);
   assert.doesNotMatch(`${html}\n${app}`, /target=["']_blank["']|modalBackdrop/);
   assert.match(styles, /grid-template-columns:repeat\(4/);
   assert.doesNotMatch(`${html}\n${app}`, /lorem ipsum|demo content|placeholder text/i);

@@ -73,6 +73,11 @@ export default function Home() {
       {shown.length > 0 ? <div className="resourceGrid">{shown.map((resource) => <article className={`resourceCard ${resource.featured ? "featured" : ""}`} key={resource.title}><div className="cardTop"><span className="resourceIcon" aria-hidden="true">{resource.icon}</span>{resource.featured && <span className="featuredTag">Featured</span>}</div><small>{resource.category}</small><h3>{resource.title}</h3><p>{resource.description}</p>{resource.href ? <a className="cardAction" href={resource.href}>{resource.href.startsWith("mailto:") ? "Email resource" : "Open resource"}</a> : <details className="cardInstructions"><summary>View instructions</summary><p>{resource.note}</p></details>}</article>)}</div> : <div className="empty" role="status"><span aria-hidden="true">⌕</span><strong>No resources found</strong><p>Try a different search term or select another category.</p><button type="button" className="secondary" onClick={() => { setQuery(""); setCategory(allResourcesLabel); }}>Reset filters</button></div>}
     </section>
 
+    <aside className="contactJamie" aria-labelledby="contact-jamie-title">
+      <div><span>NEED MORE HELP?</span><h2 id="contact-jamie-title">Have more questions? Contact Jamie.</h2><p>Send Jamie a message for additional assistance with employee resources.</p></div>
+      <a className="contactJamieButton" href="mailto:jamieson.schmitt@adeccona.com?subject=Employee%20Resource%20Hub%20Question">Email Jamie</a>
+    </aside>
+
     <footer><strong>Adecco Employee Resource Hub</strong><span>Centralized access to everyday support</span></footer>
 
   </main>;
