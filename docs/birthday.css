@@ -1,4 +1,7 @@
 birthday-greeting{display:block}birthday-greeting[hidden]{display:none}
+.birthdayManage{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.birthdayManage button{border:1px solid #bda476;background:#fffaf0;color:#63491e;border-radius:9px;padding:11px 17px;min-height:44px;font:600 14px Arial,sans-serif;cursor:pointer}
+.birthdayManage button:first-child{background:#795820;color:#fffaf0;border-color:#795820}
 .birthdayDay .contactJamie{color:#3f321c;border:1px solid #decba4;box-shadow:0 12px 32px #79531b16}
 .birthdayDay .contactJamie span{color:#765a2a}
 .birthdayDay .contactJamie h2{color:#3f321c;font-family:Georgia,serif;font-weight:400;font-size:1.65rem}

@@ -1,5 +1,5 @@
 import { months } from "./birthday-core.js";
-import { createCelebration, storageKey } from "./birthday-local.js";
+import { saveBirthday } from "./birthday-local.js";
 
 function fillForm(host, onSuccess) {
   host.innerHTML = `<form class="birthdayForm"><label>Your name<input name="name" autocomplete="name" required minlength="2" maxlength="80" placeholder="First and last name"></label><div class="birthdayDateFields"><label>Birthday month<select name="month" required><option value="">Select month</option></select></label><label>Birthday day<select name="day" required><option value="">Select day</option></select></label></div><p class="birthdayHelp">Your celebration is just for you on this browser until midnight Eastern time. Nothing is sent to GitHub or to an administrator.</p><p class="birthdayHelp">February 29 birthdays are celebrated on February 28 in other years.</p><p class="birthdayStatus" role="status" aria-live="polite"></p><button class="primary" type="submit">Submit</button></form>`;
@@ -17,9 +17,7 @@ function fillForm(host, onSuccess) {
     if (!form.reportValidity()) return;
     const status = form.querySelector(".birthdayStatus");
     try {
-      const record = createCelebration({ name: form.elements.name.value, month: Number(month.value), day: Number(day.value) });
-      let saved = false;
-      try { localStorage.setItem(storageKey, JSON.stringify(record)); saved = true; } catch { /* The current page can still celebrate. */ }
+      const { record, saved } = saveBirthday({ name: form.elements.name.value, month: Number(month.value), day: Number(day.value) });
       onSuccess(record, saved);
     } catch (error) { status.textContent = error.message; status.dataset.error = "true"; }
   });
@@ -37,8 +35,9 @@ if (standalone) fillForm(standalone, (record, saved) => {
 
 let dialog;
 document.addEventListener("click", event => {
+  const add = event.target.closest?.('[data-add-birthday]');
   const link = event.target.closest?.('a[href]');
-  if (!link || !new URL(link.href).pathname.endsWith("/birthday.html") || standalone || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+  if (!add && (!link || !new URL(link.href).pathname.endsWith("/birthday.html") || standalone || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey)) return;
   event.preventDefault();
   if (!dialog) {
     dialog = document.createElement("dialog"); dialog.className = "birthdayDialog";

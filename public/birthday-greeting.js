@@ -1,5 +1,5 @@
 import { birthdaysToday } from "./birthday-core.js";
-import { readCelebration, dayKey } from "./birthday-local.js";
+import { currentCelebration, clearCelebration, reloadCelebration } from "./birthday-local.js";
 import "./birthday-signup.js";
 
 // Independent of the resource directory: a birthday failure never blocks resources.
@@ -10,7 +10,7 @@ class BirthdayGreeting extends HTMLElement {
     this.signature = "";
     this.onPersonal = event => { this.personal = event.detail; this.refresh(); };
     document.addEventListener("birthday-personal", this.onPersonal);
-    this.onStorage = () => { this.personal = null; this.refresh(); };
+    this.onStorage = () => { reloadCelebration(); this.refresh(); };
     window.addEventListener("storage", this.onStorage);
     this.onVisibility = () => { if (!document.hidden) this.refresh(); };
     document.addEventListener("visibilitychange", this.onVisibility);
@@ -27,11 +27,8 @@ class BirthdayGreeting extends HTMLElement {
     document.body.classList.remove("birthdayDay");
   }
   refresh() {
-    let record = this.personal;
-    if (record?.expiresOn !== dayKey()) record = null;
-    if (!record) { try { record = readCelebration(localStorage); } catch { /* Browser storage may be unavailable. */ } }
-    this.personal = record;
-    this.rows = record ? [record] : [];
+    const record = currentCelebration();
+    this.rows = record?.birthdays || [];
     this.renderToday();
   }
   renderToday() {
@@ -56,6 +53,14 @@ class BirthdayGreeting extends HTMLElement {
       if (!matchMedia("(prefers-reduced-motion: reduce)").matches) name.animate([{ transform: "translateY(-35px)", opacity: 0 }, { transform: "translateY(0)", opacity: 1 }], { duration: 900, delay: Math.min(i * 90, 500), fill: "backwards", easing: "cubic-bezier(.16,1,.3,1)" });
     });
     this.append(section);
+    const actions = document.createElement("div");
+    actions.className = "birthdayManage";
+    actions.innerHTML = '<button type="button" data-add-birthday>Add birthday</button><button type="button" data-clear-birthdays>Clear celebration</button>';
+    actions.querySelector('[data-clear-birthdays]').addEventListener("click", () => {
+      clearCelebration(); this.refresh();
+      document.querySelector('.brand')?.focus();
+    });
+    section.append(actions);
     this.stopGold = startGold();
   }
 }
