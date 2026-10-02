@@ -1,4 +1,5 @@
 const resources = [
+  { icon:"🎂", title:"Birthdays & Celebrations", description:"Share your birthday for a greeting from your Adecco team.", category:"HR & Employee Support", keywords:"birthday birth date celebration signup recognition", href:"birthday.html" },
   { icon:"⏰", title:"Time Off / ATO", description:"Request planned Approved Time Off through the official form.", category:"Payroll & Time", keywords:"absence vacation day off leave", href:"https://tinyurl.com/adeccotimeoff", note:"Submit planned time-off requests in advance and wait for approval before finalizing plans. ATO approval and entering paid sick-time hours are separate processes." },
   { icon:"💰", title:"Pay & Paystubs", description:"View paystubs, W-2s, holiday pay status, and payroll information.", category:"Payroll & Time", keywords:"payroll paycheck direct deposit w2", href:"https://www.adomyinfo.com" },
   { icon:"🤒", title:"Sick Time", description:"Check your sick-leave balance and enter eligible sick-time hours.", category:"Payroll & Time", keywords:"illness absence paid leave balance", href:"https://www.adomyinfo.com", note:"Use ADOMYinfo to review your available balance and enter eligible sick-time hours. Confirm current eligibility and policy rules with HR." },
@@ -48,7 +49,7 @@ function render() {
     const action = resource.href
       ? `<a class="cardAction" href="${escapeHtml(resource.href)}">${resource.href.startsWith("mailto:") ? "Email resource" : "Open resource"}</a>`
       : `<details class="cardInstructions"><summary>View instructions</summary><p>${escapeHtml(resource.note || "Contact your site lead or HR for assistance.")}</p></details>`;
-    return `<article class="resourceCard ${resource.featured ? "featured" : ""}"><div class="cardTop"><span class="resourceIcon" aria-hidden="true">${resource.icon}</span>${resource.featured ? '<span class="featuredTag">Featured</span>' : ""}</div><small>${escapeHtml(resource.category)}</small><h3>${escapeHtml(resource.title)}</h3><p>${escapeHtml(resource.description)}</p>${action}</article>`;
+    return `<article class="resourceCard ${resource.featured ? "featured" : ""}"><div class="cardTop"><span class="resourceIcon" aria-hidden="true">${resource.icon}</span>${resource.featured ? '<span class="featuredTag">Featured</span>' : ""}</div>${resource.title === "Birthdays & Celebrations" ? "" : `<small>${escapeHtml(resource.category)}</small>`}<h3>${escapeHtml(resource.title)}</h3><p>${escapeHtml(resource.description)}</p>${action}</article>`;
   }).join("");
 }
 
@@ -63,3 +64,4 @@ elements.chips.addEventListener("click", (event) => {
 });
 document.querySelector("#reset-filters").addEventListener("click", () => { activeCategory = allResourcesLabel; elements.search.value = ""; elements.chips.querySelectorAll("button").forEach((item) => { const selected = item.dataset.category === activeCategory; item.classList.toggle("active", selected); item.setAttribute("aria-pressed", String(selected)); }); render(); });
 render();
+

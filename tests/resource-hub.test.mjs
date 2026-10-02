@@ -8,7 +8,7 @@ test("resource data powers the dashboard metrics and filters", async () => {
   const page = await readFile(new URL("app/page.tsx", root), "utf8");
   const resources = [...page.matchAll(/title: "([^"]+)"/g)].map((match) => match[1]);
   const categories = new Set([...page.matchAll(/category: "([^"]+)"/g)].map((match) => match[1]));
-  assert.equal(resources.length, 20);
+  assert.equal(resources.length, 21);
   assert.equal(categories.size, 8);
   assert.match(page, /resources\.length/);
   assert.match(page, /new Set\(resources\.map/);

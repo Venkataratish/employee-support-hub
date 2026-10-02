@@ -1,0 +1,27 @@
+birthday-greeting{display:block}birthday-greeting[hidden]{display:none}
+.birthdayDay .contactJamie{color:#3f321c;border:1px solid #decba4;box-shadow:0 12px 32px #79531b16}
+.birthdayDay .contactJamie span{color:#765a2a}
+.birthdayDay .contactJamie h2{color:#3f321c;font-family:Georgia,serif;font-weight:400;font-size:1.65rem}
+.birthdayDay .contactJamie p{color:#635439}
+.birthdayDay .contactJamieButton{background:#795820;color:#fffaf0;box-shadow:0 7px 18px #79582026}
+.birthdayDay .contactJamieButton:hover{background:#604317}
+.birthdayDialog{width:calc(100% - 32px);max-width:530px;border:1px solid #e4d2ad;border-radius:20px;padding:28px;background:#fffaf0;color:#342d20;max-height:90dvh;overflow:auto;box-shadow:0 24px 80px #211b2340}
+.birthdayDialog::backdrop{background:#17203377;backdrop-filter:blur(4px)}
+.birthdayDialog h2{font:400 30px/1.2 Georgia,serif;padding-right:30px;margin:0 0 20px}
+.birthdayDialog .birthdayForm{margin:0;padding:0;border:0;background:transparent}
+.birthdayClose{position:absolute;right:15px;top:12px;border:0;background:transparent;color:#63491e;font-size:28px;min-width:40px;min-height:40px;cursor:pointer}
+.birthdayDay{background:radial-gradient(ellipse at 95% 5%,#efdbac 0,transparent 55%),radial-gradient(ellipse at 0 80%,#f5e7c5 0,transparent 60%),#fffaf0;background-attachment:fixed;--bg:#fffaf0;--line:#e5d8bb}
+.birthdayDay .hero{display:none}
+.birthdayDay .topbar{background:rgba(255,250,240,.95);border-color:#e5d8bb}
+.birthdayDay .resourceCard,.birthdayDay .search,.birthdayDay .chips button:not(.active),.birthdayDay .contactJamie{background:#fffaf0;border-color:#e5d8bb}
+.birthdayDay footer{background:transparent;border-color:#e5d8bb}
+.birthdayGreeting{position:relative;max-width:1280px;margin:0 auto;padding:64px 28px 46px;overflow:hidden;color:#342d20;scroll-margin-top:100px}
+.birthdayGreeting .birthdayEyebrow{display:block;font:700 11px/1.5 Arial,sans-serif;letter-spacing:2px;color:#89662d;margin-bottom:16px}
+.birthdayGreeting h1{font:400 clamp(38px,5vw,64px)/1.08 Georgia,serif;letter-spacing:-1px;margin:0 0 24px}
+.birthdayGreeting .birthdayNames{font:400 clamp(28px,4.5vw,48px)/1.2 Georgia,serif;color:#856126;overflow-wrap:anywhere;margin:0 0 18px}
+.birthdayGreeting .birthdayNames span{display:inline-block;margin-right:.3em}
+.birthdayGreeting p{font:14px/1.7 Arial,sans-serif;color:#6e624d;margin:8px 0;max-width:560px}
+.birthdayGold{position:fixed;inset:0;width:100%;height:100%;z-index:25;pointer-events:none}
+.birthdayPage{max-width:650px;padding:40px 20px 70px;margin:auto}.birthdayPage h1{font-size:34px;letter-spacing:-1px;margin:18px 0 12px}.birthdayIntro{color:#536577;line-height:1.7}.birthdayForm{padding:28px;background:#fff;border:1px solid #e0e7eb;border-radius:18px;margin-top:24px}.birthdayForm label:not(.birthdayConsent){display:grid;gap:8px;font-size:14px;font-weight:600;margin-bottom:20px}.birthdayForm input:not([type=checkbox]),.birthdayForm select{width:100%;padding:12px;border:1px solid #bbc7d0;border-radius:9px;background:#fff;color:#17243b;font:16px Arial,sans-serif;min-height:46px}.birthdayDateFields{display:grid;grid-template-columns:1fr 1fr;gap:16px}.birthdayConsent{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.6;margin:8px 0 22px}.birthdayConsent input{flex-shrink:0;margin-top:5px;width:18px;height:18px}.birthdayHelp{font-size:12px;color:#586b7c;line-height:1.7}.birthdayStatus{line-height:1.6;white-space:pre-line;font-size:14px}.birthdayStatus:empty{display:none}.birthdayStatus[data-error=true]{color:#a62737}.birthdayForm button,.birthdayReview button{min-height:44px;cursor:pointer}.birthdayForm button:disabled{opacity:.6;cursor:default}.birthdayTrap{position:absolute;left:-10000px;visibility:hidden}.birthdayReview{background:#fff;border:1px solid #dfe7ec;border-radius:14px;padding:22px;margin-top:16px}.birthdayReview h2{font-size:20px;overflow-wrap:anywhere;margin:0 0 8px}.birthdayReview p{font-size:14px;color:#536577}.birthdayReviewActions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.birthdayAdminToolbar{display:flex;gap:12px;flex-wrap:wrap;margin:20px 0}.birthdayAdminToolbar a{align-self:center;font-size:14px;text-decoration:underline}.birthdayPage [hidden]{display:none!important}.birthdayPage a.backLink{color:#13745e;font-size:14px;text-decoration:underline}.birthdayPage button:focus-visible,.birthdayPage input:focus-visible,.birthdayPage select:focus-visible{outline:3px solid #167e68;outline-offset:3px}
+@media(max-width:750px){.birthdayGreeting{padding:42px 22px 30px}.birthdayForm{padding:22px}.birthdayPage h1{font-size:30px}}
+@media(prefers-reduced-motion:reduce){.birthdayGold{display:none}}

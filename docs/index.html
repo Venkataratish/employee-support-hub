@@ -12,6 +12,8 @@
   <link rel="icon" href="adecco-logo.png">
   <link rel="stylesheet" href="styles.css">
   <script src="app.js" defer></script>
+  <link rel="stylesheet" href="birthday.css">
+  <script type="module" src="birthday-greeting.js"></script>
 </head>
 <body>
   <header class="topbar">
@@ -22,8 +24,9 @@
     <nav aria-label="Primary navigation"><a href="#resources">Resources</a></nav>
   </header>
 
-  <main>
-    <section class="hero" id="top">
+  <main id="top">
+    <birthday-greeting hidden></birthday-greeting>
+    <section class="hero">
       <div class="heroCopy">
         <span class="eyebrow">EVERYDAY EMPLOYEE SUPPORT</span>
         <h1>How can we help you today?</h1>

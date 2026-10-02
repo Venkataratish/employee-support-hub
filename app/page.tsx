@@ -1,10 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import BirthdayGreeting from "./BirthdayGreeting";
 
 type Resource = { icon: string; title: string; description: string; category: string; keywords: string; href?: string; note?: string; featured?: boolean };
 
 const resources: Resource[] = [
+  { icon: "🎂", title: "Birthdays & Celebrations", description: "Share your birthday for a greeting from your Adecco team.", category: "HR & Employee Support", keywords: "birthday birth date celebration signup recognition", href: "/birthday.html" },
   { icon: "⏰", title: "Time Off / ATO", description: "Request planned Approved Time Off through the official form.", category: "Payroll & Time", keywords: "absence vacation day off leave", href: "https://tinyurl.com/adeccotimeoff", note: "Submit planned time-off requests in advance and wait for approval before finalizing plans. ATO approval and entering paid sick-time hours are separate processes." },
   { icon: "💰", title: "Pay & Paystubs", description: "View paystubs, W-2s, holiday pay status, and payroll information.", category: "Payroll & Time", keywords: "payroll paycheck direct deposit w2", href: "https://www.adomyinfo.com" },
   { icon: "🤒", title: "Sick Time", description: "Check your sick-leave balance and enter eligible sick-time hours.", category: "Payroll & Time", keywords: "illness absence paid leave balance", href: "https://www.adomyinfo.com", note: "Use ADOMYinfo to review your available balance and enter eligible sick-time hours. Confirm current eligibility and policy rules with HR." },
@@ -47,7 +49,7 @@ export default function Home() {
     });
   }, [query, category]);
 
-  return <main>
+  return <main id="top">
     <header className="topbar">
       <a className="brand" href="#top" aria-label="Adecco Employee Resource Hub home">
         {/* The supplied brand asset is already optimized and intentionally served directly. */}
@@ -58,7 +60,8 @@ export default function Home() {
       <nav aria-label="Primary navigation"><a href="#resources">Resources</a></nav>
     </header>
 
-    <section className="hero" id="top">
+    <BirthdayGreeting />
+    <section className="hero">
       <div className="heroCopy"><span className="eyebrow">EVERYDAY EMPLOYEE SUPPORT</span><h1>How can we help you today?</h1><p>Find HR, payroll, benefits, attendance, safety, transportation, and workplace resources in one reliable directory.</p><a className="primary" href="#resources">Browse resources</a></div>
       <dl className="overview" aria-label="Resource overview">{metrics.map((metric) => <div className="metric" key={metric.label}><dt>{metric.label}</dt><dd>{metric.value}</dd><span>{metric.detail}</span></div>)}</dl>
     </section>
@@ -70,7 +73,7 @@ export default function Home() {
         <div className="chips" role="group" aria-label="Filter resources by category">{categories.map((item) => <button type="button" className={item === category ? "active" : ""} aria-pressed={item === category} onClick={() => setCategory(item)} key={item}>{item}</button>)}</div>
       </div>
       <div className="resultsHeader" aria-live="polite"><strong>{shown.length} {shown.length === 1 ? "resource" : "resources"}</strong>{(query || category !== allResourcesLabel) && <span>matching your current filters</span>}</div>
-      {shown.length > 0 ? <div className="resourceGrid">{shown.map((resource) => <article className={`resourceCard ${resource.featured ? "featured" : ""}`} key={resource.title}><div className="cardTop"><span className="resourceIcon" aria-hidden="true">{resource.icon}</span>{resource.featured && <span className="featuredTag">Featured</span>}</div><small>{resource.category}</small><h3>{resource.title}</h3><p>{resource.description}</p>{resource.href ? <a className="cardAction" href={resource.href}>{resource.href.startsWith("mailto:") ? "Email resource" : "Open resource"}</a> : <details className="cardInstructions"><summary>View instructions</summary><p>{resource.note}</p></details>}</article>)}</div> : <div className="empty" role="status"><span aria-hidden="true">⌕</span><strong>No resources found</strong><p>Try a different search term or select another category.</p><button type="button" className="secondary" onClick={() => { setQuery(""); setCategory(allResourcesLabel); }}>Reset filters</button></div>}
+      {shown.length > 0 ? <div className="resourceGrid">{shown.map((resource) => <article className={`resourceCard ${resource.featured ? "featured" : ""}`} key={resource.title}><div className="cardTop"><span className="resourceIcon" aria-hidden="true">{resource.icon}</span>{resource.featured && <span className="featuredTag">Featured</span>}</div>{resource.title !== "Birthdays & Celebrations" && <small>{resource.category}</small>}<h3>{resource.title}</h3><p>{resource.description}</p>{resource.href ? <a className="cardAction" href={resource.href}>{resource.href.startsWith("mailto:") ? "Email resource" : "Open resource"}</a> : <details className="cardInstructions"><summary>View instructions</summary><p>{resource.note}</p></details>}</article>)}</div> : <div className="empty" role="status"><span aria-hidden="true">⌕</span><strong>No resources found</strong><p>Try a different search term or select another category.</p><button type="button" className="secondary" onClick={() => { setQuery(""); setCategory(allResourcesLabel); }}>Reset filters</button></div>}
     </section>
 
     <aside className="contactJamie" aria-labelledby="contact-jamie-title">
@@ -82,3 +85,4 @@ export default function Home() {
 
   </main>;
 }
+
