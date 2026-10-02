@@ -1,4 +1,4 @@
-import { months } from "./birthday-core.js";
+import { months, birthdayDate } from "./birthday-core.js";
 import { saveBirthday } from "./birthday-local.js";
 
 function fillForm(host, onSuccess) {
@@ -11,7 +11,13 @@ function fillForm(host, onSuccess) {
     for (let i = 1; i <= count; i++) day.add(new Option(String(i), i));
     if (Number(previous) <= count) day.value = previous;
   };
-  update(); month.addEventListener("change", update);
+  const today = birthdayDate();
+  month.value = String(today.month); update(); day.value = String(today.day);
+  const hint = document.createElement("p");
+  hint.className = "birthdayHelp";
+  hint.textContent = `Today is ${months[today.month - 1]} ${today.day} (Eastern time). Add each person celebrating today, one at a time.`;
+  form.prepend(hint);
+  month.addEventListener("change", update);
   form.addEventListener("submit", event => {
     event.preventDefault();
     if (!form.reportValidity()) return;

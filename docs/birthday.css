@@ -1,4 +1,7 @@
 birthday-greeting{display:block}birthday-greeting[hidden]{display:none}
+.birthdayToolbar{max-width:1280px;margin:auto;padding:20px 28px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border-bottom:1px solid #e5d8bb}
+.birthdayToolbar .birthdayManage{margin:0}
+.birthdayManage button:disabled{opacity:.45;cursor:default}
 .birthdayManage{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
 .birthdayManage button{border:1px solid #bda476;background:#fffaf0;color:#63491e;border-radius:9px;padding:11px 17px;min-height:44px;font:600 14px Arial,sans-serif;cursor:pointer}
 .birthdayManage button:first-child{background:#795820;color:#fffaf0;border-color:#795820}

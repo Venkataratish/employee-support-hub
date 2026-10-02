@@ -38,9 +38,16 @@ class BirthdayGreeting extends HTMLElement {
     this.signature = signature;
     this.stopGold?.();
     this.replaceChildren();
-    this.hidden = today.length === 0;
+    this.hidden = false;
     document.body.classList.toggle("birthdayDay", today.length > 0);
-    if (!today.length) return;
+    if (!today.length) {
+      const controls = document.createElement("section");
+      controls.className = "birthdayToolbar";
+      controls.setAttribute("aria-label", "Birthday celebrations");
+      controls.innerHTML = '<strong>Birthday celebrations</strong><div class="birthdayManage"><button type="button" data-add-birthday>+ Add birthday</button><button type="button" disabled>Clear all birthdays</button></div>';
+      this.append(controls);
+      return;
+    }
     const section = document.createElement("section");
     section.className = "birthdayGreeting";
     section.setAttribute("aria-label", "Today's birthday appreciation");
@@ -55,7 +62,7 @@ class BirthdayGreeting extends HTMLElement {
     this.append(section);
     const actions = document.createElement("div");
     actions.className = "birthdayManage";
-    actions.innerHTML = '<button type="button" data-add-birthday>Add birthday</button><button type="button" data-clear-birthdays>Clear celebration</button>';
+    actions.innerHTML = '<button type="button" data-add-birthday>+ Add birthday</button><button type="button" data-clear-birthdays>Clear all birthdays</button>';
     actions.querySelector('[data-clear-birthdays]').addEventListener("click", () => {
       clearCelebration(); this.refresh();
       document.querySelector('.brand')?.focus();
