@@ -71,7 +71,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid color
 .cardInstructions summary{color:var(--red);font-size:.84rem;font-weight:820;cursor:pointer;list-style-position:inside}
 .cardInstructions summary:hover{color:var(--red-dark)}
 .cardInstructions p{margin:12px 0 0;font-size:.8rem;line-height:1.55;white-space:pre-line}
-.leadershipContacts{width:100%;display:grid;gap:10px;margin-top:auto}
+.leadershipContacts{width:100%;display:grid;gap:10px;margin-top:12px}
 .leadershipContact{border-top:1px solid var(--line);padding-top:10px}
 .leadershipContact strong,.leadershipContact>span{display:block}
 .leadershipContact strong{font-size:.86rem;color:var(--ink)}
