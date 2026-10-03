@@ -1,5 +1,4 @@
 const resources = [
-  { icon:"🎂", title:"Birthdays & Celebrations", description:"Share your birthday for a greeting from your Adecco team.", category:"HR & Employee Support", keywords:"birthday birth date celebration signup recognition", href:"birthday.html" },
   { icon:"⏰", title:"Time Off / ATO", description:"Request planned Approved Time Off through the official form.", category:"Payroll & Time", keywords:"absence vacation day off leave", href:"https://tinyurl.com/adeccotimeoff", note:"Submit planned time-off requests in advance and wait for approval before finalizing plans. ATO approval and entering paid sick-time hours are separate processes." },
   { icon:"💰", title:"Pay & Paystubs", description:"View paystubs, W-2s, holiday pay status, and payroll information.", category:"Payroll & Time", keywords:"payroll paycheck direct deposit w2", href:"https://www.adomyinfo.com" },
   { icon:"🤒", title:"Sick Time", description:"Check your sick-leave balance and enter eligible sick-time hours.", category:"Payroll & Time", keywords:"illness absence paid leave balance", href:"https://www.adomyinfo.com", note:"Use ADOMYinfo to review your available balance and enter eligible sick-time hours. Confirm current eligibility and policy rules with HR." },
@@ -19,7 +18,13 @@ const resources = [
   { icon:"📄", title:"Employment Verification", description:"Use The Work Number for employment or income verification.", category:"Work Resources", keywords:"equifax proof income employer", href:"https://www.theworknumber.com" },
   { icon:"📋", title:"Attendance Policy", description:"Request the current attendance, absence, and reporting policy from HR.", category:"HR & Employee Support", keywords:"policy tardy late absence occurrence holiday", note:"Attendance rules can vary by assignment and site. Contact the HUB at thehub@adeccona.com or call (800) 793-7657, option 6, to request the current approved attendance policy." },
   { icon:"📅", title:"2026 Observed Holidays", description:"Review the workplace’s posted 2026 observed-holiday dates.", category:"Payroll & Time", keywords:"new year mlk memorial independence labor thanksgiving black friday christmas", note:"Posted dates: New Year’s Day — Jan 1; MLK Day — Jan 19; Memorial Day — May 25; Independence Day observed — Jul 3; Labor Day — Sep 7; Thanksgiving — Nov 26; Black Friday — Nov 27; Christmas Day — Dec 25. Confirm assignment-specific holiday eligibility with your site lead." },
-  { icon:"👥", title:"Adecco Leadership Contacts", description:"Contact Global Operations, the Site Manager, Program Manager, or Area Operations Partner.", category:"Leadership Contacts", keywords:"joe mills john welton jamie schmitt gloria zuniga leadership contacts", note:"Joe Mills — Global Operations\njoe.mills@adeccona.com · Cell: (734) 249-0976\n\nJohn Welton — Site Manager\njohn.welton@adeccona.com\n\nJamie Schmitt — Program Manager\njamieson.schmitt@adeccona.com · Cell: (517) 428-3623\n\nGloria Zuniga — Area Operations Partner\ngloria.zuniga@adeccona.com · Text: (818) 277-6273" },
+  { icon:"👥", title:"Adecco Leadership Contacts", description:"Contact Global Operations, the Site Manager, Program Manager, or Area Operations Partner.", category:"Leadership Contacts", keywords:"joe mills john welton jamie schmitt gloria zuniga leadership contacts", contacts:[
+    { name:"Joe Mills", role:"Global Operations", email:"joe.mills@adeccona.com", phone:"7342490976" },
+    { name:"John Welton", role:"Site Manager", email:"john.welton@adeccona.com" },
+    { name:"Jamie Schmitt", role:"Program Manager", email:"jamieson.schmitt@adeccona.com", phone:"5174283623" },
+    { name:"Gloria Zuniga", role:"Area Operations Partner", email:"gloria.zuniga@adeccona.com", phone:"8182776273", text:true },
+  ] },
+  { icon:"🎂", title:"Birthdays & Celebrations", description:"Share your birthday for a greeting from your Adecco team.", category:"HR & Employee Support", keywords:"birthday birth date celebration signup recognition", href:"birthday.html" },
 ];
 
 const allResourcesLabel = "All resources";
@@ -27,6 +32,7 @@ const categories = [allResourcesLabel, ...new Set(resources.map((resource) => re
 let activeCategory = allResourcesLabel;
 
 const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[character]));
+const contactButtons = (contacts) => `<div class="leadershipContacts">${contacts.map((contact) => `<section class="leadershipContact"><strong>${escapeHtml(contact.name)}</strong><span>${escapeHtml(contact.role)}</span><div><a href="mailto:${escapeHtml(contact.email)}">Email</a>${contact.phone ? `<a href="${contact.text ? "sms" : "tel"}:${contact.phone}">${contact.text ? "Text" : "Call"}</a>` : '<span class="contactUnavailable">Phone not listed</span>'}</div></section>`).join("")}</div>`;
 const elements = {
   search: document.querySelector("#search"), clear: document.querySelector("#clear-search"), chips: document.querySelector("#chips"), count: document.querySelector("#count"), grid: document.querySelector("#grid"), empty: document.querySelector("#empty"), overview: document.querySelector("#overview")
 };
@@ -46,7 +52,9 @@ function render() {
   elements.grid.hidden = visible.length === 0;
   elements.empty.hidden = visible.length !== 0;
   elements.grid.innerHTML = visible.map((resource) => {
-    const action = resource.href
+    const action = resource.contacts
+      ? contactButtons(resource.contacts)
+      : resource.href
       ? `<a class="cardAction" href="${escapeHtml(resource.href)}">${resource.href.startsWith("mailto:") ? "Email resource" : "Open resource"}</a>`
       : `<details class="cardInstructions"><summary>View instructions</summary><p>${escapeHtml(resource.note || "Contact your site lead or HR for assistance.")}</p></details>`;
     return `<article class="resourceCard ${resource.featured ? "featured" : ""}"><div class="cardTop"><span class="resourceIcon" aria-hidden="true">${resource.icon}</span>${resource.featured ? '<span class="featuredTag">Featured</span>' : ""}</div>${resource.title === "Birthdays & Celebrations" ? "" : `<small>${escapeHtml(resource.category)}</small>`}<h3>${escapeHtml(resource.title)}</h3><p>${escapeHtml(resource.description)}</p>${action}</article>`;

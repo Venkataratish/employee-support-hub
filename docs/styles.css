@@ -69,6 +69,17 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid color
 .cardInstructions summary{color:var(--red);font-size:.84rem;font-weight:820;cursor:pointer;list-style-position:inside}
 .cardInstructions summary:hover{color:var(--red-dark)}
 .cardInstructions p{margin:12px 0 0;font-size:.8rem;line-height:1.55;white-space:pre-line}
+.leadershipContacts{width:100%;display:grid;gap:10px;margin-top:auto}
+.leadershipContact{border-top:1px solid var(--line);padding-top:10px}
+.leadershipContact strong,.leadershipContact>span{display:block}
+.leadershipContact strong{font-size:.86rem;color:var(--ink)}
+.leadershipContact>span{font-size:.74rem;color:var(--muted);margin:2px 0 8px}
+.leadershipContact div{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.leadershipContact a{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:7px 12px;border-radius:9px;background:var(--red);color:#fff;font-size:.76rem;font-weight:820;text-decoration:none}
+.leadershipContact a:hover{background:var(--red-dark)}
+.leadershipContact a+ a{background:#15223b}
+.leadershipContact a+ a:hover{background:#263754}
+.contactUnavailable{font-size:.72rem;color:var(--muted)}
 .empty{text-align:center;background:#fff;border:1px dashed #bec6d2;border-radius:18px;padding:58px 24px}
 .empty>span{display:block;font-size:2.2rem;color:#8a94a4;margin-bottom:10px}
 .empty strong{display:block;font-size:1.18rem;margin-bottom:6px}
