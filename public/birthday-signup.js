@@ -1,9 +1,33 @@
 import { months, birthdayDate } from "./birthday-core.js";
-import { saveBirthday } from "./birthday-local.js";
+import { saveBirthday, currentCelebration, clearCelebration } from "./birthday-local.js";
 
 function fillForm(host, onSuccess) {
   host.innerHTML = `<form class="birthdayForm"><label>Your name<input name="name" autocomplete="name" required minlength="2" maxlength="80" placeholder="First and last name"></label><div class="birthdayDateFields"><label>Birthday month<select name="month" required><option value="">Select month</option></select></label><label>Birthday day<select name="day" required><option value="">Select day</option></select></label></div><p class="birthdayHelp">Your celebration is just for you on this browser until midnight Eastern time. Nothing is sent to GitHub or to an administrator.</p><p class="birthdayHelp">February 29 birthdays are celebrated on February 28 in other years.</p><p class="birthdayStatus" role="status" aria-live="polite"></p><button class="primary" type="submit">Submit</button></form>`;
   const form = host.querySelector("form"), month = form.elements.month, day = form.elements.day;
+  const actions = document.createElement("div");
+  actions.className = "birthdayManage";
+  const submit = form.querySelector('[type="submit"]');
+  actions.append(submit);
+  const add = document.createElement("button");
+  add.type = "submit"; add.value = "another"; add.textContent = "+ Add another birthday";
+  const clear = document.createElement("button");
+  clear.type = "button"; clear.textContent = "Clear all birthdays";
+  actions.append(add, clear); form.append(actions);
+  const list = document.createElement("p"); list.className = "birthdayHelp";
+  form.insertBefore(list, actions);
+  const refreshList = () => {
+    const rows = currentCelebration()?.birthdays || [];
+    list.textContent = rows.length ? `Celebrating today: ${rows.map(row => row.name).join(", ")}` : "No birthdays added yet.";
+    clear.disabled = !rows.length;
+  };
+  refreshList();
+  clear.addEventListener("click", () => {
+    clearCelebration();
+    document.dispatchEvent(new CustomEvent("birthday-personal"));
+    refreshList();
+    const status = form.querySelector(".birthdayStatus");
+    status.dataset.error = "false"; status.textContent = "All birthdays cleared. The normal dashboard is restored.";
+  });
   months.forEach((label, i) => month.add(new Option(label, i + 1)));
   const update = () => {
     const previous = day.value; day.replaceChildren(new Option("Select day", ""));
@@ -24,7 +48,11 @@ function fillForm(host, onSuccess) {
     const status = form.querySelector(".birthdayStatus");
     try {
       const { record, saved } = saveBirthday({ name: form.elements.name.value, month: Number(month.value), day: Number(day.value) });
-      onSuccess(record, saved);
+      if (event.submitter === add) {
+        document.dispatchEvent(new CustomEvent("birthday-personal", { detail: record }));
+        refreshList(); form.elements.name.value = ""; form.elements.name.focus();
+        status.dataset.error = "false"; status.textContent = "Birthday added. Enter the next person’s name, or close this window to view the celebration.";
+      } else onSuccess(record, saved);
     } catch (error) { status.textContent = error.message; status.dataset.error = "true"; }
   });
 }
