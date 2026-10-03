@@ -82,6 +82,13 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid color
 .leadershipContact a+ a{background:#15223b}
 .leadershipContact a+ a:hover{background:#263754}
 .contactUnavailable{font-size:.72rem;color:var(--muted)}
+.instructionList{display:grid;gap:0;margin:12px 0 0;padding:0;list-style:none}
+.instructionList li{padding:8px 0;border-bottom:1px solid var(--line);font-size:.78rem;line-height:1.4;color:var(--muted)}
+.instructionList li:last-child{border-bottom:0}
+.instructionActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.instructionActions a{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:8px 12px;border-radius:9px;background:var(--red);color:#fff;font-size:.76rem;font-weight:820;text-decoration:none}
+.instructionActions a:hover{background:var(--red-dark)}
+.instructionActions a+ a{background:#15223b}
 .empty{text-align:center;background:#fff;border:1px dashed #bec6d2;border-radius:18px;padding:58px 24px}
 .empty>span{display:block;font-size:2.2rem;color:#8a94a4;margin-bottom:10px}
 .empty strong{display:block;font-size:1.18rem;margin-bottom:6px}
