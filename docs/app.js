@@ -74,3 +74,61 @@ elements.chips.addEventListener("click", (event) => {
 document.querySelector("#reset-filters").addEventListener("click", () => { activeCategory = allResourcesLabel; elements.search.value = ""; elements.chips.querySelectorAll("button").forEach((item) => { const selected = item.dataset.category === activeCategory; item.classList.toggle("active", selected); item.setAttribute("aria-pressed", String(selected)); }); render(); });
 render();
 
+const announcementData = Array.isArray(window.HUB_ANNOUNCEMENTS) ? window.HUB_ANNOUNCEMENTS : [];
+const announcementCategories = ["All", "Announcements", "Internal postings", "Office updates"];
+const notificationElements = {
+  button: document.querySelector("#notification-button"), badge: document.querySelector("#notification-badge"), panel: document.querySelector("#notification-panel"),
+  overlay: document.querySelector("#notification-overlay"), close: document.querySelector("#notification-close"), tabs: document.querySelector("#notification-tabs"),
+  list: document.querySelector("#notification-list"), empty: document.querySelector("#notification-empty"), markAll: document.querySelector("#notification-mark-all")
+};
+const notificationStorageKey = "adecco-hub-read-notifications-v1";
+let notificationCategory = "All";
+let readNotifications = new Set();
+try { readNotifications = new Set(JSON.parse(localStorage.getItem(notificationStorageKey) || "[]")); } catch {}
+
+const activeAnnouncements = () => {
+  const today = new Date();
+  return announcementData.filter((item) => !item.expires || today <= new Date(`${item.expires}T23:59:59`)).sort((a, b) => b.posted.localeCompare(a.posted));
+};
+const saveReadNotifications = () => {
+  try { localStorage.setItem(notificationStorageKey, JSON.stringify([...readNotifications])); } catch {}
+};
+const formatAnnouncementDate = (value) => new Intl.DateTimeFormat("en-US", { month:"short", day:"numeric", year:"numeric", timeZone:"America/New_York" }).format(new Date(`${value}T12:00:00-04:00`));
+const updateNotificationBadge = () => {
+  const count = activeAnnouncements().filter((item) => !readNotifications.has(item.id)).length;
+  notificationElements.badge.hidden = count === 0;
+  notificationElements.badge.textContent = count > 9 ? "9+" : String(count);
+  notificationElements.button.setAttribute("aria-label", count ? `Open notifications, ${count} unread` : "Open notifications");
+};
+const markNotificationRead = (id) => { readNotifications.add(id); saveReadNotifications(); updateNotificationBadge(); renderNotifications(); };
+function renderNotifications() {
+  notificationElements.tabs.innerHTML = announcementCategories.map((category) => `<button type="button" data-notification-category="${escapeHtml(category)}" aria-pressed="${category === notificationCategory}" class="${category === notificationCategory ? "active" : ""}">${escapeHtml(category)}</button>`).join("");
+  const visible = activeAnnouncements().filter((item) => notificationCategory === "All" || item.category === notificationCategory);
+  notificationElements.list.hidden = visible.length === 0;
+  notificationElements.empty.hidden = visible.length !== 0;
+  notificationElements.list.innerHTML = visible.map((item) => {
+    const unread = !readNotifications.has(item.id);
+    return `<article class="notificationItem ${unread ? "unread" : ""}" data-notification-id="${escapeHtml(item.id)}"><div class="notificationIcon" aria-hidden="true">${escapeHtml(item.icon || "📌")}</div><div><div class="notificationMeta"><span>${escapeHtml(item.category)}</span><time datetime="${escapeHtml(item.posted)}">${escapeHtml(formatAnnouncementDate(item.posted))}</time></div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.message)}</p><div class="notificationActions">${item.link ? `<a href="${escapeHtml(item.link)}" data-read-notification>${escapeHtml(item.linkLabel || "Read more")}</a>` : ""}${unread ? '<button type="button" data-mark-read>Mark as read</button>' : '<span>Read</span>'}</div></div></article>`;
+  }).join("");
+  notificationElements.markAll.disabled = !activeAnnouncements().some((item) => !readNotifications.has(item.id));
+}
+const openNotifications = () => {
+  notificationElements.panel.hidden = false; notificationElements.overlay.hidden = false;
+  notificationElements.button.setAttribute("aria-expanded", "true"); document.body.classList.add("notificationsOpen");
+  notificationElements.close.focus();
+};
+const closeNotifications = () => {
+  notificationElements.panel.hidden = true; notificationElements.overlay.hidden = true;
+  notificationElements.button.setAttribute("aria-expanded", "false"); document.body.classList.remove("notificationsOpen");
+  notificationElements.button.focus();
+};
+notificationElements.button.addEventListener("click", openNotifications);
+notificationElements.close.addEventListener("click", closeNotifications);
+notificationElements.overlay.addEventListener("click", closeNotifications);
+notificationElements.tabs.addEventListener("click", (event) => { const button = event.target.closest("button[data-notification-category]"); if (button) { notificationCategory = button.dataset.notificationCategory; renderNotifications(); } });
+notificationElements.list.addEventListener("click", (event) => { const item = event.target.closest("[data-notification-id]"); if (item && (event.target.closest("[data-mark-read]") || event.target.closest("[data-read-notification]"))) markNotificationRead(item.dataset.notificationId); });
+notificationElements.markAll.addEventListener("click", () => { activeAnnouncements().forEach((item) => readNotifications.add(item.id)); saveReadNotifications(); updateNotificationBadge(); renderNotifications(); });
+document.addEventListener("keydown", (event) => { if (event.key === "Escape" && !notificationElements.panel.hidden) closeNotifications(); });
+renderNotifications();
+updateNotificationBadge();
+

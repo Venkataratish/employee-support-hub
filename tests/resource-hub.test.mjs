@@ -28,10 +28,11 @@ test("resource actions and search are accessible", async () => {
 });
 
 test("public GitHub Pages build stays synchronized", async () => {
-  const [html, app, styles] = await Promise.all([
+  const [html, app, styles, announcements] = await Promise.all([
     readFile(new URL("docs/index.html", root), "utf8"),
     readFile(new URL("docs/app.js", root), "utf8"),
     readFile(new URL("docs/styles.css", root), "utf8"),
+    readFile(new URL("docs/announcements.js", root), "utf8"),
   ]);
   assert.match(html, /Adecco Employee Resource Hub/);
   assert.match(html, /id="overview"/);
@@ -42,5 +43,10 @@ test("public GitHub Pages build stays synchronized", async () => {
   assert.match(html, /mailto:jamieson\.schmitt@adeccona\.com/);
   assert.doesNotMatch(`${html}\n${app}`, /target=["']_blank["']|modalBackdrop/);
   assert.match(styles, /grid-template-columns:repeat\(4/);
+  assert.match(html, /id="notification-button"/);
+  assert.match(html, /id="notification-panel"/);
+  assert.match(app, /adecco-hub-read-notifications-v1/);
+  assert.match(app, /Internal postings/);
+  assert.match(announcements, /HUB_ANNOUNCEMENTS/);
   assert.doesNotMatch(`${html}\n${app}`, /lorem ipsum|demo content|placeholder text/i);
 });
