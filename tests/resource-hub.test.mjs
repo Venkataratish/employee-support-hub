@@ -40,6 +40,9 @@ test("public GitHub Pages build stays synchronized", async () => {
   assert.match(app, /const resources = \[/);
   assert.match(app, /elements\.empty/);
   assert.match(app, /Open resource/);
+  assert.match(app, /Request time off/);
+  assert.match(app, /Cancel time-off request/);
+  assert.match(app, /1FAIpQLScHAHDHXqRl_dxtFqaNxzY9HBCWb9KJOeXgE-FpXqazDw9v6A/);
   assert.match(html, /mailto:jamieson\.schmitt@adeccona\.com/);
   assert.doesNotMatch(`${html}\n${app}`, /target=["']_blank["']|modalBackdrop/);
   assert.match(styles, /grid-template-columns:repeat\(4/);
