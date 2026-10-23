@@ -24,7 +24,7 @@ const resources = [
     { name:"Jamie Schmitt", role:"Program Manager", email:"jamieson.schmitt@adeccona.com", phone:"5174283623" },
     { name:"Gloria Zuniga", role:"Area Operations Partner", email:"gloria.zuniga@adeccona.com", phone:"8182776273", text:true },
   ] },
-  { icon:"🎂", title:"Birthdays & Celebrations", description:"Share your birthday for a greeting from your Adecco team.", category:"HR & Employee Support", keywords:"birthday birth date celebration signup recognition", href:"birthday.html" },
+  { icon:"🎂", title:"Birthdays & Celebrations", description:"View birthday celebrations published by your Adecco team.", category:"HR & Employee Support", keywords:"birthday birth date celebration recognition", href:"birthday.html" },
 ];
 
 const allResourcesLabel = "All resources";
@@ -74,8 +74,8 @@ elements.chips.addEventListener("click", (event) => {
 document.querySelector("#reset-filters").addEventListener("click", () => { activeCategory = allResourcesLabel; elements.search.value = ""; elements.chips.querySelectorAll("button").forEach((item) => { const selected = item.dataset.category === activeCategory; item.classList.toggle("active", selected); item.setAttribute("aria-pressed", String(selected)); }); render(); });
 render();
 
-const announcementData = Array.isArray(window.HUB_ANNOUNCEMENTS) ? window.HUB_ANNOUNCEMENTS : [];
-const announcementCategories = ["All", "Announcements", "Internal postings", "Office updates"];
+let announcementData = [];
+const announcementCategories = ["All", "Announcements", "Job postings", "Internal updates", "Office updates"];
 const notificationElements = {
   button: document.querySelector("#notification-button"), badge: document.querySelector("#notification-badge"), panel: document.querySelector("#notification-panel"),
   overlay: document.querySelector("#notification-overlay"), close: document.querySelector("#notification-close"), tabs: document.querySelector("#notification-tabs"),
@@ -88,7 +88,12 @@ try { readNotifications = new Set(JSON.parse(localStorage.getItem(notificationSt
 
 const activeAnnouncements = () => {
   const today = new Date();
-  return announcementData.filter((item) => !item.expires || today <= new Date(`${item.expires}T23:59:59`)).sort((a, b) => b.posted.localeCompare(a.posted));
+  return announcementData.filter((item) => {
+    if (item.status === "draft") return false;
+    const starts = item.publishAt || item.posted;
+    const ends = item.expiresAt || item.expires;
+    return (!starts || today >= new Date(`${starts}T00:00:00`)) && (!ends || today <= new Date(`${ends}T23:59:59`));
+  }).sort((a, b) => (b.posted || "").localeCompare(a.posted || ""));
 };
 const saveReadNotifications = () => {
   try { localStorage.setItem(notificationStorageKey, JSON.stringify([...readNotifications])); } catch {}
@@ -131,4 +136,9 @@ notificationElements.markAll.addEventListener("click", () => { activeAnnouncemen
 document.addEventListener("keydown", (event) => { if (event.key === "Escape" && !notificationElements.panel.hidden) closeNotifications(); });
 renderNotifications();
 updateNotificationBadge();
+window.HUB_CONTENT_READY?.then((items) => {
+  announcementData = items;
+  renderNotifications();
+  updateNotificationBadge();
+});
 

@@ -1,6 +1,4 @@
-import { birthdaysToday } from "./birthday-core.js";
-import { currentCelebration, reloadCelebration } from "./birthday-local.js";
-import "./birthday-signup.js";
+import { birthdaysToday, validateDirectory } from "./birthday-core.js";
 
 // Independent of the resource directory: a birthday failure never blocks resources.
 class BirthdayGreeting extends HTMLElement {
@@ -8,29 +6,30 @@ class BirthdayGreeting extends HTMLElement {
     this.hidden = true;
     this.rows = [];
     this.signature = "";
-    this.onPersonal = event => { this.personal = event.detail; this.refresh(); };
-    document.addEventListener("birthday-personal", this.onPersonal);
-    this.onStorage = () => { reloadCelebration(); this.refresh(); };
-    window.addEventListener("storage", this.onStorage);
     this.onVisibility = () => { if (!document.hidden) this.refresh(); };
     document.addEventListener("visibilitychange", this.onVisibility);
     this.timer = setInterval(() => this.refresh(), 60000);
-    this.refresh();
+    this.load();
   }
   disconnectedCallback() {
     clearInterval(this.timer);
     document.removeEventListener("visibilitychange", this.onVisibility);
     this.controller?.abort();
-    document.removeEventListener("birthday-personal", this.onPersonal);
-    window.removeEventListener("storage", this.onStorage);
     this.stopGold?.();
     document.body.classList.remove("birthdayDay");
   }
-  refresh() {
-    const record = currentCelebration();
-    this.rows = record?.birthdays || [];
+  async load() {
+    try {
+      const response = await fetch("data/birthdays.json", { cache: "no-cache" });
+      if (!response.ok) throw new Error("Birthday directory unavailable");
+      this.rows = validateDirectory(await response.json());
+    } catch (error) {
+      console.error("Birthday celebrations could not be loaded.", error);
+      this.rows = [];
+    }
     this.renderToday();
   }
+  refresh() { this.renderToday(); }
   renderToday() {
     const today = birthdaysToday(this.rows);
     const signature = JSON.stringify(today);

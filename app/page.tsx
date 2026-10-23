@@ -31,7 +31,7 @@ const resources: Resource[] = [
     { name: "Jamie Schmitt", role: "Program Manager", email: "jamieson.schmitt@adeccona.com", phone: "5174283623" },
     { name: "Gloria Zuniga", role: "Area Operations Partner", email: "gloria.zuniga@adeccona.com", phone: "8182776273", text: true },
   ] },
-  { icon: "🎂", title: "Birthdays & Celebrations", description: "Share your birthday for a greeting from your Adecco team.", category: "HR & Employee Support", keywords: "birthday birth date celebration signup recognition", href: "/birthday.html" },
+  { icon: "🎂", title: "Birthdays & Celebrations", description: "View birthday celebrations published by your Adecco team.", category: "HR & Employee Support", keywords: "birthday birth date celebration recognition", href: "/birthday.html" },
 ];
 
 const allResourcesLabel = "All resources";

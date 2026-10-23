@@ -1,0 +1,15 @@
+{
+  "items": [
+    {
+      "id": "hub-update-2026-10-23",
+      "icon": "📣",
+      "title": "Employee Resource Hub updates",
+      "message": "The hub includes expandable instructions, leadership contacts, notifications, and administrator-managed birthday celebrations.",
+      "posted": "2026-10-23",
+      "publishAt": "2026-10-23",
+      "expiresAt": "2027-01-01",
+      "link": "#resources",
+      "linkLabel": "Browse resources"
+    }
+  ]
+}

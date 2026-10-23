@@ -28,11 +28,13 @@ test("resource actions and search are accessible", async () => {
 });
 
 test("public GitHub Pages build stays synchronized", async () => {
-  const [html, app, styles, announcements] = await Promise.all([
+  const [html, app, styles, loader, birthdays, birthdayPage] = await Promise.all([
     readFile(new URL("docs/index.html", root), "utf8"),
     readFile(new URL("docs/app.js", root), "utf8"),
     readFile(new URL("docs/styles.css", root), "utf8"),
-    readFile(new URL("docs/announcements.js", root), "utf8"),
+    readFile(new URL("docs/content-loader.js", root), "utf8"),
+    readFile(new URL("docs/data/birthdays.json", root), "utf8"),
+    readFile(new URL("docs/birthday.html", root), "utf8"),
   ]);
   assert.match(html, /Adecco Employee Resource Hub/);
   assert.match(html, /id="overview"/);
@@ -49,7 +51,11 @@ test("public GitHub Pages build stays synchronized", async () => {
   assert.match(html, /id="notification-button"/);
   assert.match(html, /id="notification-panel"/);
   assert.match(app, /adecco-hub-read-notifications-v1/);
-  assert.match(app, /Internal postings/);
-  assert.match(announcements, /HUB_ANNOUNCEMENTS/);
+  assert.match(app, /Job postings/);
+  assert.match(app, /Internal updates/);
+  assert.match(loader, /data\/announcements\.json/);
+  assert.match(loader, /data\/job-postings\.json/);
+  assert.deepEqual(JSON.parse(birthdays), { version: 1, birthdays: [] });
+  assert.doesNotMatch(`${html}\n${app}\n${birthdayPage}`, /birthday-personal-form|Add birthday|Clear all birthdays|Send for approval/);
   assert.doesNotMatch(`${html}\n${app}`, /lorem ipsum|demo content|placeholder text/i);
 });
